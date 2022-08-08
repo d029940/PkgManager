@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 typealias PkgUtilOutput = [String]
 
@@ -13,8 +14,8 @@ enum PkgUtilErrors: Error {
     case pkgUtilCmdFailed(errorno: Int32)
 }
 
-struct PkgUtil {
-    private(set) var pkgList: PkgUtilOutput = []
+class PkgUtil: ObservableObject {
+    @Published private(set) var pkgList: PkgUtilOutput = []
     private(set) var pkgGroups: PkgUtilOutput = []
     private(set) var currentPkgFilesDirs: PkgUtilOutput = []
     private(set) var pkgFilesDirs: [PkgUtilOutput] = []
@@ -27,7 +28,7 @@ struct PkgUtil {
     
     /// Reading all packages
     /// sets the var pkgList
-    mutating func getPkgList() {
+    func getPkgList() {
         pkgList.removeAll()
         do {
             try pkgList = (pkgutil(args: "--pkgs"))
@@ -41,7 +42,7 @@ struct PkgUtil {
     
     /// Reading all package groups
     /// sets the var pkgGroups
-    mutating func getPkgGroups() {
+    func getPkgGroups() {
         pkgGroups.removeAll()
         do {
             try pkgGroups = pkgutil(args: "--groups")
@@ -56,7 +57,7 @@ struct PkgUtil {
     /// Getting all files and directories  of a given package
     /// sets the var currentPkgFilesDirs
     /// - Parameter package: package to inspect for files and directories
-    mutating func getPkgFilesDirs(of package: String) {
+    func getPkgFilesDirs(of package: String) {
         currentPkgFilesDirs.removeAll()
         do {
             try currentPkgFilesDirs = pkgutil(args: "--lsbom", package)
@@ -68,7 +69,7 @@ struct PkgUtil {
     }
     
     /// Get files and directories of all packages
-    mutating func getAllPkgFilesDirs() {
+    func getAllPkgFilesDirs() {
         pkgFilesDirs.removeAll()
         for pkg in pkgList {
             getPkgFilesDirs(of: pkg)
@@ -77,7 +78,7 @@ struct PkgUtil {
     }
     
     /// removes all Apple packages from pkglist
-    mutating func removeApplePkgs() {
+    func removeApplePkgs() {
         pkgList.removeAll { pkg in
             pkg.hasPrefix(PkgUtil.applePkgs) ? true : false
         }
@@ -86,7 +87,7 @@ struct PkgUtil {
     /// call pkgutil command line tool
     /// throws an error if pkgutil returns non-null
     /// - Parameter args for pkgutil
-    private mutating func pkgutil(args: String...) throws -> PkgUtilOutput {
+    private  func pkgutil(args: String...) throws -> PkgUtilOutput {
         let outputPipe = Pipe()
         let task = Process()
         task.launchPath = "/usr/sbin/pkgutil"
