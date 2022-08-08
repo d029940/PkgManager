@@ -7,5 +7,26 @@
 
 import Foundation
 
-print("Hello, World!")
+var pkgutil = PkgUtil()
+pkgutil.getPkgList()
+//print(pkgutil.pkgList)
+print("PkgList count \(pkgutil.pkgList.count)")
+pkgutil.removeApplePkgs()
+print("PkgList count \(pkgutil.pkgList.count)")
+//pkgutil.getPkgGroups()
+//print(pkgutil.pkgGroups)
+//pkgutil.getPkgFilesDirs(of: pkgutil.pkgList[1])
+//print(pkgutil.currentPkgFilesDirs)
+//pkgutil.getAllPkgFilesDirs()
+//print(pkgutil.pkgFilesDirs)
+
+
+print("end")
+
+
+
+
+
+
+
 
