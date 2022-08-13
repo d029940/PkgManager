@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "63E89BA1289E559900AC6564"
-               BuildableName = "Pkg_Manager"
+               BuildableName = "pkgManager"
                BlueprintName = "pkgManager"
                ReferencedContainer = "container:Pkg_Manager.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63E89BA1289E559900AC6564"
-            BuildableName = "Pkg_Manager"
+            BuildableName = "pkgManager"
             BlueprintName = "pkgManager"
             ReferencedContainer = "container:Pkg_Manager.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63E89BA1289E559900AC6564"
-            BuildableName = "Pkg_Manager"
+            BuildableName = "pkgManager"
             BlueprintName = "pkgManager"
             ReferencedContainer = "container:Pkg_Manager.xcodeproj">
          </BuildableReference>

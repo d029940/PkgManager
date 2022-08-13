@@ -8,11 +8,12 @@
 import Foundation
 
 var pkgutil = PkgUtil()
-pkgutil.getPkgList()
+//pkgutil.getPkgList()
 //print(pkgutil.pkgList)
-print("PkgList count \(pkgutil.pkgList.count)")
+//print("PkgList count \(pkgutil.pkgList.count)")
 pkgutil.removeApplePkgs()
-print("PkgList count \(pkgutil.pkgList.count)")
+//print("PkgList count \(pkgutil.pkgList.count)")
+print(pkgutil.pkgList)
 //pkgutil.getPkgGroups()
 //print(pkgutil.pkgGroups)
 //pkgutil.getPkgFilesDirs(of: pkgutil.pkgList[1])
