@@ -83,7 +83,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		63992AEE28A15CA9005D2A97 /* PackageManager */ = {
+		63992AEE28A15CA9005D2A97 /* PkgManagerGui */ = {
 			isa = PBXGroup;
 			children = (
 				63992AEF28A15CA9005D2A97 /* PackageManagerApp.swift */,
@@ -92,7 +92,7 @@
 				63992AF828A15CAA005D2A97 /* PackageManager.entitlements */,
 				63992AF528A15CAA005D2A97 /* Preview Content */,
 			);
-			path = PackageManager;
+			path = PkgManagerGui;
 			sourceTree = "<group>";
 		};
 		63992AF528A15CAA005D2A97 /* Preview Content */ = {
@@ -107,8 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				6333988E28A15D7000AE3F86 /* Shared */,
-				63E89BA4289E559900AC6564 /* Pkg_Manager */,
-				63992AEE28A15CA9005D2A97 /* PackageManager */,
+				63E89BA4289E559900AC6564 /* PkgManagerCmd */,
+				63992AEE28A15CA9005D2A97 /* PkgManagerGui */,
 				63E89BA3289E559900AC6564 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,12 +122,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		63E89BA4289E559900AC6564 /* Pkg_Manager */ = {
+		63E89BA4289E559900AC6564 /* PkgManagerCmd */ = {
 			isa = PBXGroup;
 			children = (
 				63E89BA5289E559900AC6564 /* main.swift */,
 			);
-			path = Pkg_Manager;
+			path = PkgManagerCmd;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -246,11 +246,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = PackageManager/PackageManager.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PkgManagerGui/PackageManager.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PackageManager/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"PkgManagerGui/Preview Content\"";
 				DEVELOPMENT_TEAM = FJ86JFVDS2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -272,11 +272,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = PackageManager/PackageManager.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PkgManagerGui/PackageManager.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PackageManager/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"PkgManagerGui/Preview Content\"";
 				DEVELOPMENT_TEAM = FJ86JFVDS2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
