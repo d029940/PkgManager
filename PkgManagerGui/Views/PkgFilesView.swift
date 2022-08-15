@@ -10,8 +10,17 @@ import SwiftUI
 struct PkgFilesView: View {
     @EnvironmentObject var vm: PkgUtil
     let pkg: String
+    let viewContent: InfoFilesStates
     var body: some View {
-        vm.getPkgFilesDirs(of: pkg)
+        switch viewContent {
+        case .files:
+            vm.getPkgFiles(of: pkg)
+        case .dirs:
+            vm.getPkgDirs(of: pkg)
+        default:
+            vm.getPkgFilesDirs(of: pkg)
+        }
+
         return List(vm.currentPkgFilesDirs, id: \.self) {entry in
             Text(entry)
         }
@@ -20,6 +29,8 @@ struct PkgFilesView: View {
 
 struct PkgFilesView_Previews: PreviewProvider {
     static var previews: some View {
-        PkgFilesView(pkg: "com.apple.pkg.XProtectPayloads_10_15.16U4204").environmentObject(PkgUtil())
+        PkgFilesView(pkg: "com.apple.pkg.XProtectPayloads_10_15.16U4204",
+                     viewContent: .filesAndDirs)
+        .environmentObject(PkgUtil())
     }
 }

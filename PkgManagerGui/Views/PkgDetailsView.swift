@@ -10,14 +10,15 @@ import SwiftUI
 struct PkgDetailsView: View {
     let pkg: String
     @EnvironmentObject var vm: PkgUtil
-    @Binding var infoView: Bool
+    @Binding var detailsView: InfoFilesStates
     
     var body: some View {
         VStack {
-            if infoView == true {
+            switch detailsView {
+            case .info:
                 PkgInfoView(pkg: pkg)
-            } else {
-                PkgFilesView(pkg: pkg)
+            default:
+                PkgFilesView(pkg: pkg, viewContent: detailsView)
             }
         }
     }
@@ -26,9 +27,9 @@ struct PkgDetailsView: View {
 
 struct PkgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        @State var infoView = true
+        @State var infoView: InfoFilesStates = .info
         return PkgDetailsView(pkg: "com.apple.pkg.XProtectPayloads_10_15.16U4204",
-        infoView: $infoView)
+        detailsView: $infoView)
             .environmentObject(PkgUtil())
     }
 }

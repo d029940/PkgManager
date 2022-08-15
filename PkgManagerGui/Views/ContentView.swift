@@ -12,20 +12,28 @@ enum ApplePackagesButtonText: String {
     case show = "Show Apple Packages"
 }
 
-enum InfoFilesButtonText: String {
-    case files = "Files"
-    case info = "Info"
+enum InfoFilesStates: Identifiable, CaseIterable {
+    case info, files, dirs, filesAndDirs
+    var id: Self {self}
 }
 
+extension InfoFilesStates {
+    var buttonText: String {
+        switch self {
+        case .info: return "Info"
+        case .files: return "Only Files"
+        case .dirs: return "Only Dirs"
+        case .filesAndDirs: return "Files/Dirs"
+        }
+    }
+}
 
 struct ContentView: View {
     @StateObject var vm = PkgUtil()
     @State private var hideApplePkg = true
     @State private var buttonPkgText = ApplePackagesButtonText.show.rawValue
     
-    @State private var infoView = true
-    @State private var buttonInfoText = InfoFilesButtonText.files.rawValue
-
+    @State private var infoFilesState = InfoFilesStates.info
     
     var body: some View {
     
@@ -33,7 +41,7 @@ struct ContentView: View {
             NavigationView {
                 List(vm.pkgList, id: \.self) {pkg in
                     NavigationLink(pkg) {
-                        PkgDetailsView(pkg: pkg, infoView: $infoView)
+                        PkgDetailsView(pkg: pkg, detailsView: $infoFilesState)
                     }
 
                 }
@@ -54,16 +62,16 @@ struct ContentView: View {
                         vm.hideApplePkgs()
                     }
                 }
+                
                 Spacer()
-                Button(buttonInfoText) {
-                    if infoView == true {
-                        infoView = false
-                        buttonInfoText = InfoFilesButtonText.info.rawValue
-                    } else {
-                        infoView = true
-                        buttonInfoText = InfoFilesButtonText.files.rawValue
+                
+                Picker("Details:", selection: $infoFilesState) {
+                    ForEach(InfoFilesStates.allCases) { state in
+                        Text(state.buttonText)
                     }
                 }
+                .pickerStyle(.segmented)
+
                 Button("Show Package List") {
                     vm.getPkgList()
                 }

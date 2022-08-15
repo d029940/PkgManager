@@ -14,6 +14,11 @@ enum PkgUtilErrors: Error {
     case pkgUtilCmdFailed(errorno: Int32)
 }
 
+enum PkgUtilsErrorMessages: String {
+    case promptMessage = "pkgutil return ocde:"
+    case unknownError = "Unknown error"
+}
+
 class PkgUtil: ObservableObject {
     @Published var currentPkg: String = ""
     @Published private(set) var pkgList: PkgUtilOutput = []
@@ -21,6 +26,20 @@ class PkgUtil: ObservableObject {
     private(set) var currentPkgFilesDirs: PkgUtilOutput = []
     private(set) var pkgFilesDirs: [PkgUtilOutput] = []
     
+    // Constants for pkgutil command
+    private static let pkgCmd = "/usr/sbin/pkgutil"
+    enum PkgCommands: String {
+        case list = "--pkgs"
+        case groups = "--groups"
+        case pkgsOfGroup = "--group-pkgs"
+        case info = "--pkg-info"
+        case filesDirs = "--lsbom"
+        case forget = "--forget"
+    }
+    enum PkgOptions: String {
+        case onlyFiles = "--only-files"
+        case onlyDirs = "--only-dirs"
+    }
     private static let applePkgs = "com.apple.pkg" // Apple packages begin with com.apple.pkg (or com.apple)
     
     /// Start with packages of pkgutil but remove Apple packages
@@ -36,12 +55,12 @@ class PkgUtil: ObservableObject {
     func getPkgList() {
         pkgList.removeAll()
         do {
-            try pkgList = (pkgutil(args: "--pkgs"))
+            try pkgList = (pkgutil(args: PkgCommands.list.rawValue))
             pkgList.removeLast()
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
-            print("pkgutil return ocde: \(errorno)")
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
-            fatalError("Unknown error")
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
     }
     
@@ -57,12 +76,12 @@ class PkgUtil: ObservableObject {
     func getPkgGroups() {
         pkgGroups.removeAll()
         do {
-            try pkgGroups = pkgutil(args: "--groups")
+            try pkgGroups = pkgutil(args: PkgCommands.groups.rawValue)
             pkgGroups.removeLast()
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
-            print("pkgutil return ocde: \(errorno)")
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
-            fatalError("Unknown error")
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
     }
     
@@ -74,11 +93,42 @@ class PkgUtil: ObservableObject {
     func getPkgFilesDirs(of package: String) {
         currentPkgFilesDirs.removeAll()
         do {
-            try currentPkgFilesDirs = pkgutil(args: "--lsbom", package)
+            try currentPkgFilesDirs = pkgutil(args: PkgCommands.filesDirs.rawValue, package)
+            currentPkgFilesDirs.removeFirst() // remove current dir
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
-            print("pkgutil return ocde: \(errorno)")
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
-            fatalError("Unknown error")
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+        }
+    }
+    
+    /// Getting all files  of a given package
+    /// sets the var currentPkgFilesDirs
+    /// - Parameter package: package to inspect for files
+    func getPkgFiles(of package: String) {
+        currentPkgFilesDirs.removeAll()
+        do {
+            try currentPkgFilesDirs = pkgutil(args: PkgOptions.onlyFiles.rawValue, PkgCommands.filesDirs.rawValue, package)
+            currentPkgFilesDirs.removeFirst() // remove current dir
+        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+        } catch {
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+        }
+    }
+    
+    /// Getting all directories  of a given package
+    /// sets the var currentPkgFilesDirs
+    /// - Parameter package: package to inspect for directories
+    func getPkgDirs(of package: String) {
+        currentPkgFilesDirs.removeAll()
+        do {
+            try currentPkgFilesDirs = pkgutil(args: PkgOptions.onlyDirs.rawValue, PkgCommands.filesDirs.rawValue, package)
+            currentPkgFilesDirs.removeFirst() // remove current dir
+        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+        } catch {
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
     }
     
@@ -96,7 +146,7 @@ class PkgUtil: ObservableObject {
     /// - Returns: Package Info (array of string lines of pkgutil output)
     /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null))
     func readPkgInfoAsLines(of package: String) throws -> PkgUtilOutput {
-        return  try pkgutil(args: "--pkg-info", package)
+        return  try pkgutil(args: PkgCommands.info.rawValue, package)
     }
     
     
@@ -105,8 +155,7 @@ class PkgUtil: ObservableObject {
     /// - Returns: Package Info as string
     /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null))
     func readPkgInfoAsString(of package: String) throws -> String {
-        let x = try pkgutilAsString(args: "--pkg-info", package)
-        return x
+        return try pkgutilAsString(args: PkgCommands.info.rawValue, package)
     }
     
     // MARK: - Helpers
@@ -118,7 +167,7 @@ class PkgUtil: ObservableObject {
     private  func pkgutil(args: String...) throws -> PkgUtilOutput {
         let outputPipe = Pipe()
         let task = Process()
-        task.launchPath = "/usr/sbin/pkgutil"
+        task.launchPath = PkgUtil.pkgCmd
         task.arguments = args
         task.standardOutput = outputPipe
         if let _ = try? task.run() {
@@ -136,7 +185,7 @@ class PkgUtil: ObservableObject {
     private  func pkgutilAsString(args: String...) throws -> String {
         let outputPipe = Pipe()
         let task = Process()
-        task.launchPath = "/usr/sbin/pkgutil"
+        task.launchPath = PkgUtil.pkgCmd
         task.arguments = args
         task.standardOutput = outputPipe
         if let _ = try? task.run() {
