@@ -21,8 +21,11 @@ struct PkgFilesView: View {
             vm.getPkgFilesDirs(of: pkg)
         }
 
-        return List(vm.currentPkgFilesDirs, id: \.self) {entry in
-            Text(entry)
+        return List(vm.pkgFilesDirs, id: \.self) {entry in
+            HStack {
+                Label(entry, systemImage: "multiply.circle")
+                // and "checkmark.square"
+            }
         }
     }
 }

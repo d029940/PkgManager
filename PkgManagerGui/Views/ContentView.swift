@@ -47,7 +47,7 @@ struct ContentView: View {
                 }
                 .navigationTitle("Result from pkgutil")
                 
-                Text("Pkgutil result")
+                Text("Pkgutil Output")
             }
             HStack {
                 Button(buttonPkgText) {

@@ -8,39 +8,68 @@
 import Foundation
 import Combine
 
+// MARK: - Types and Enums
 typealias PkgUtilOutput = [String]
 
+/// Error  thrown by pkgutil system command
 enum PkgUtilErrors: Error {
     case pkgUtilCmdFailed(errorno: Int32)
 }
 
+/// Error Messages thrown by pkgutil functions
 enum PkgUtilsErrorMessages: String {
     case promptMessage = "pkgutil return ocde:"
     case unknownError = "Unknown error"
 }
 
+/// Tristate for result check existence of files / dirs
+enum CheckExistence {
+    case unknown, exists, notExists
+}
+
+/// Defines properties and functions of  the manage package utilty
 class PkgUtil: ObservableObject {
+    
+    // MARK: - Properties exposed to outside
     @Published var currentPkg: String = ""
     @Published private(set) var pkgList: PkgUtilOutput = []
     private(set) var pkgGroups: PkgUtilOutput = []
-    private(set) var currentPkgFilesDirs: PkgUtilOutput = []
-    private(set) var pkgFilesDirs: [PkgUtilOutput] = []
+    private(set) var pkgFilesDirs: PkgUtilOutput = []
+    private(set) var pkgFilesDirsExistence = [CheckExistence]()   // Holds per each file/dir whether they exist in filesystem
     
-    // Constants for pkgutil command
+    // MARK: - Constants for pkgutil command
+
     private static let pkgCmd = "/usr/sbin/pkgutil"
+    
+    /// Commands of pkgutil implemented
     enum PkgCommands: String {
         case list = "--pkgs"
         case groups = "--groups"
         case pkgsOfGroup = "--group-pkgs"
         case info = "--pkg-info"
+        case info_plist = "--pkg-info-plist"
         case filesDirs = "--lsbom"
         case forget = "--forget"
     }
+    /// Options for some pkgutil commands
     enum PkgOptions: String {
         case onlyFiles = "--only-files"
         case onlyDirs = "--only-dirs"
     }
-    private static let applePkgs = "com.apple.pkg" // Apple packages begin with com.apple.pkg (or com.apple)
+    /// Various info retrievable for a package
+    enum PkgInfo: String {
+        case location = "install-location"
+        case time = "install-time"
+        case version = "version"
+        case id = "pkgid"
+        case receiptPlist = "receipt-plist"
+        case volume = "volume"
+    }
+    
+    
+    /// Apple packages begin with com.apple.pkg (or com.apple)
+    private static let applePkgs = "com.apple.pkg"
+    
     
     /// Start with packages of pkgutil but remove Apple packages
     public init() {
@@ -85,16 +114,17 @@ class PkgUtil: ObservableObject {
         }
     }
     
-    // MARK: -Read Infos, files and directories of a package
+    // MARK: - Read files and directories of a package
     
     /// Getting all files and directories  of a given package
     /// sets the var currentPkgFilesDirs
     /// - Parameter package: package to inspect for files and directories
     func getPkgFilesDirs(of package: String) {
-        currentPkgFilesDirs.removeAll()
+        pkgFilesDirs.removeAll()
         do {
-            try currentPkgFilesDirs = pkgutil(args: PkgCommands.filesDirs.rawValue, package)
-            currentPkgFilesDirs.removeFirst() // remove current dir
+            try pkgFilesDirs = pkgutil(args: PkgCommands.filesDirs.rawValue, package)
+            pkgFilesDirs.removeFirst() // remove current dir
+            pkgFilesDirsExistence = Array(repeating: CheckExistence.unknown, count: pkgFilesDirs.count)
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
@@ -106,10 +136,11 @@ class PkgUtil: ObservableObject {
     /// sets the var currentPkgFilesDirs
     /// - Parameter package: package to inspect for files
     func getPkgFiles(of package: String) {
-        currentPkgFilesDirs.removeAll()
+        pkgFilesDirs.removeAll()
         do {
-            try currentPkgFilesDirs = pkgutil(args: PkgOptions.onlyFiles.rawValue, PkgCommands.filesDirs.rawValue, package)
-            currentPkgFilesDirs.removeFirst() // remove current dir
+            try pkgFilesDirs = pkgutil(args: PkgOptions.onlyFiles.rawValue, PkgCommands.filesDirs.rawValue, package)
+            pkgFilesDirs.removeFirst() // remove current dir
+            pkgFilesDirsExistence = Array(repeating: CheckExistence.unknown, count: pkgFilesDirs.count)
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
@@ -121,10 +152,11 @@ class PkgUtil: ObservableObject {
     /// sets the var currentPkgFilesDirs
     /// - Parameter package: package to inspect for directories
     func getPkgDirs(of package: String) {
-        currentPkgFilesDirs.removeAll()
+        pkgFilesDirs.removeAll()
         do {
-            try currentPkgFilesDirs = pkgutil(args: PkgOptions.onlyDirs.rawValue, PkgCommands.filesDirs.rawValue, package)
-            currentPkgFilesDirs.removeFirst() // remove current dir
+            try pkgFilesDirs = pkgutil(args: PkgOptions.onlyDirs.rawValue, PkgCommands.filesDirs.rawValue, package)
+            pkgFilesDirs.removeFirst() // remove current dir
+            pkgFilesDirsExistence = Array(repeating: CheckExistence.unknown, count: pkgFilesDirs.count)
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
@@ -132,16 +164,31 @@ class PkgUtil: ObservableObject {
         }
     }
     
-    /// Get files and directories of all packages
-    func getAllPkgFilesDirs() {
-        pkgFilesDirs.removeAll()
-        for pkg in pkgList {
-            getPkgFilesDirs(of: pkg)
-            pkgFilesDirs.append(currentPkgFilesDirs)
+    /// Checks if the files / dirs for a package exists
+    /// Updates var pkgFilesDirsExistence
+    /// - Parameter package: package to be checked
+    func checkFileDirExistence(of package: String) throws {
+        do {
+            let pkgInfoDict = try readPkgInfoAsPlist(of: package)
+            
+            if let path = pkgInfoDict?[PkgInfo.location.rawValue], let volume = pkgInfoDict?[PkgInfo.volume.rawValue] {
+                let fm = FileManager.default
+                for (index, item) in pkgFilesDirs.enumerated() {
+                    // Check file / dir for existence
+                    let filePath = "\(volume)\(path)/\(item)"
+                    pkgFilesDirsExistence[index] = fm.fileExists(atPath: filePath) ? CheckExistence.exists : CheckExistence.notExists
+                }
+            }
+        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+        } catch {
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
     }
+
+    // MARK: - Read pnfo of a package
     
-    /// Read info of package
+    /// Read info of package as lines of strings
     /// - Parameter package: package to read info from
     /// - Returns: Package Info (array of string lines of pkgutil output)
     /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null))
@@ -149,6 +196,26 @@ class PkgUtil: ObservableObject {
         return  try pkgutil(args: PkgCommands.info.rawValue, package)
     }
     
+    /// Read info of package as plist dict
+    /// - Parameter package: package to read info from
+    /// - Returns: Package Info (plist as dict )
+    /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null))
+    func readPkgInfoAsPlist(of package: String) throws -> [String: Any]? {
+        do {
+            let pkgInfo = try pkgutilAsString(args: PkgCommands.info_plist.rawValue, package)
+            let plistData = Data(pkgInfo.utf8)
+            let options = PropertyListSerialization.MutabilityOptions.mutableContainers
+            return (try PropertyListSerialization.propertyList(from: plistData,
+                                                               options: PropertyListSerialization.ReadOptions(rawValue: options.rawValue),
+                                                               format: nil)) as? [String: Any]
+            
+        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+            return nil
+        } catch {
+            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+        }
+    }
     
     /// Read info of package
     /// - Parameter package: package to read info from
