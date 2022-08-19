@@ -186,7 +186,7 @@ class PkgUtil: ObservableObject {
         }
     }
 
-    // MARK: - Read pnfo of a package
+    // MARK: - Read Info of a package
     
     /// Read info of package as lines of strings
     /// - Parameter package: package to read info from
