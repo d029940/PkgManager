@@ -13,12 +13,13 @@ struct PkgDetailsView: View {
     @Binding var detailsView: InfoFilesStates
     
     var body: some View {
-        VStack {
+        try? vm.readPkgAsPlist(of: pkg)
+         return VStack {
             switch detailsView {
             case .info:
-                PkgInfoView(pkg: pkg)
+                PkgInfoView()
             default:
-                PkgFilesView(pkg: pkg, viewContent: detailsView)
+                PkgFilesView(viewContent: detailsView)
             }
         }
     }
@@ -28,8 +29,10 @@ struct PkgDetailsView: View {
 struct PkgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         @State var infoView: InfoFilesStates = .info
-        return PkgDetailsView(pkg: "com.apple.pkg.XProtectPayloads_10_15.16U4204",
+        let pkgUtil = PkgUtil()
+        try? pkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        return PkgDetailsView(pkg: "com.amazon.Kindle",
         detailsView: $infoView)
-            .environmentObject(PkgUtil())
+            .environmentObject(pkgUtil)
     }
 }

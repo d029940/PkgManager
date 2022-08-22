@@ -9,18 +9,16 @@ import SwiftUI
 
 struct PkgInfoView: View {
     @EnvironmentObject var vm: PkgUtil
-    let pkg: String
     
     var body: some View {
-        guard let info = try? vm.readPkgInfoAsString(of: pkg) else {
-            return Text("")
-        }
-        return Text(info)
+        Text(vm.getPkgDescription)
     }
 }
 
 struct PkgInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        PkgInfoView(pkg: "com.apple.pkg.XProtectPayloads_10_15.16U4204").environmentObject(PkgUtil())
+        let pkgUtil = PkgUtil()
+        try? pkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        return PkgInfoView().environmentObject(pkgUtil)
     }
 }

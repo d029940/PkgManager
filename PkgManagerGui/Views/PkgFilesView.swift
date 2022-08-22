@@ -9,22 +9,43 @@ import SwiftUI
 
 struct PkgFilesView: View {
     @EnvironmentObject var vm: PkgUtil
-    let pkg: String
+    @State private var showExistence: Bool = false
     let viewContent: InfoFilesStates
     var body: some View {
-        switch viewContent {
-        case .files:
-            vm.getPkgFiles(of: pkg)
-        case .dirs:
-            vm.getPkgDirs(of: pkg)
-        default:
-            vm.getPkgFilesDirs(of: pkg)
+        if showExistence {
+            // Files / dirs from package already read with pkgutil.
+            // Now only check those files/dirs if they exist
+            vm.checkFileDirExistence()
+        } else {
+            switch viewContent {
+            case .files:
+                vm.getFiles()
+            case .dirs:
+                vm.getDirs()
+            default:
+                vm.getAllPaths()
+            }
         }
 
-        return List(vm.pkgFilesDirs, id: \.self) {entry in
-            HStack {
-                Label(entry, systemImage: "multiply.circle")
-                // and "checkmark.square"
+        return VStack {
+            List($vm.currentPkg.paths, id: \.id) {$entry in
+                if showExistence {
+                    if entry.exists {
+                        Label(entry.path, systemImage: "checkmark.square")
+                    } else {
+                        Label(entry.path, systemImage: "multiply.circle")
+                    }
+                } else {
+                    Text(entry.path)
+                }
+            }
+            Spacer()
+            Button("Check Existence") {
+                if showExistence == false {
+                    showExistence = true
+                } else {
+                    showExistence = false
+                }
             }
         }
     }
@@ -32,8 +53,9 @@ struct PkgFilesView: View {
 
 struct PkgFilesView_Previews: PreviewProvider {
     static var previews: some View {
-        PkgFilesView(pkg: "com.apple.pkg.XProtectPayloads_10_15.16U4204",
-                     viewContent: .filesAndDirs)
-        .environmentObject(PkgUtil())
+        let pkgUtil = PkgUtil()
+        try? pkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        return PkgFilesView(viewContent: .filesAndDirs)
+        .environmentObject(pkgUtil)
     }
 }
