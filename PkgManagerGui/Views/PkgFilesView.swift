@@ -31,9 +31,22 @@ struct PkgFilesView: View {
             List($vm.currentPkg.paths, id: \.id) {$entry in
                 if showExistence {
                     if entry.exists {
-                        Label(entry.path, systemImage: "checkmark.square")
+                        Label {
+                            Text(entry.path)
+                        }
+                    icon: {
+                        Image(systemName: "checkmark.square")
+                    }
+                    .accentColor(/*@START_MENU_TOKEN@*/.green/*@END_MENU_TOKEN@*/)
+                        
                     } else {
-                        Label(entry.path, systemImage: "multiply.circle")
+                        Label {
+                            Text(entry.path)
+                        }
+                    icon: {
+                        Image(systemName: "multiply.circle")
+                    }
+                    .accentColor(.red)
                     }
                 } else {
                     Text(entry.path)

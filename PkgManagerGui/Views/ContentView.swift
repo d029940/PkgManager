@@ -17,74 +17,70 @@ enum InfoFilesStates: Identifiable, CaseIterable {
     var id: Self {self}
 }
 
-extension InfoFilesStates {
-    var buttonText: String {
-        switch self {
-        case .info: return "Info"
-        case .files: return "Only Files"
-        case .dirs: return "Only Dirs"
-        case .filesAndDirs: return "Files/Dirs"
-        }
-    }
-}
+
 
 struct ContentView: View {
     @StateObject var vm = PkgUtil()
     @State private var hideApplePkg = true
     @State private var buttonPkgText = ApplePackagesButtonText.show.rawValue
     
-    @State private var infoFilesState = InfoFilesStates.info
     
     var body: some View {
-        
+//        vm.getPkgList()
+//        if hideApplePkg {
+//            vm.hideApplePkgs()
+//        }
         return VStack {
+
             NavigationView {
-                List(vm.pkgList, id: \.self) {pkg in
-                    NavigationLink(pkg) {
-                        PkgDetailsView(pkg: pkg, detailsView: $infoFilesState)
+                VStack {
+                    List(vm.pkgList, id: \.self) {pkg in
+                        NavigationLink(pkg) {
+                             PkgDetailsView(pkg: pkg)
+//                            detailsView(package: pkg)
+                        }
+                    }
+                    .navigationTitle("Result from pkgutil")
+                    
+                    Spacer()
+//                                    Toggle(buttonPkgText, isOn: $hideApplePkg)
+                    Button(buttonPkgText) {
+                        if hideApplePkg == true {
+                            hideApplePkg = false
+                            buttonPkgText = ApplePackagesButtonText.hide.rawValue
+                            vm.getPkgList()
+                        } else {
+                            hideApplePkg = true
+                            buttonPkgText = ApplePackagesButtonText.show.rawValue
+                            vm.getPkgList()
+                            vm.hideApplePkgs()
+                        }
                     }
                 }
-                .navigationTitle("Result from pkgutil")
                 
                 Text("Pkgutil Output")
             }
-            HStack {
-//                Toggle(buttonPkgText, isOn: $hideApplePkg)
-    
-                Button(buttonPkgText) {
-                    if hideApplePkg == true {
-                        hideApplePkg = false
-                        buttonPkgText = ApplePackagesButtonText.hide.rawValue
-                        vm.getPkgList()
-                    } else {
-                        hideApplePkg = true
-                        buttonPkgText = ApplePackagesButtonText.show.rawValue
-                        vm.getPkgList()
-                        vm.hideApplePkgs()
-                    }
-                }
-                
-                Spacer()
-                
-                Picker("Details:", selection: $infoFilesState) {
-                    ForEach(InfoFilesStates.allCases) { state in
-                        Text(state.buttonText)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                Button("Show Package List") {
-                    vm.getPkgList()
-                }
-            }
+//
+//                Spacer()
+//
+//                Button("Show Package List") {
+//                    vm.getPkgList()
+//                }
             .padding()
         }
+    }
+    
+    func detailsView(package: String) -> PkgDetailsView {
+        vm.getPkgList()
+        if hideApplePkg {
+            vm.hideApplePkgs()
+        }
+        return PkgDetailsView(pkg: package)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        
         return ContentView().environmentObject(PkgUtil())
     }
 }
