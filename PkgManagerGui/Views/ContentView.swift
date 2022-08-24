@@ -36,20 +36,21 @@ struct ContentView: View {
     @State private var infoFilesState = InfoFilesStates.info
     
     var body: some View {
-    
-        VStack {
+        
+        return VStack {
             NavigationView {
                 List(vm.pkgList, id: \.self) {pkg in
                     NavigationLink(pkg) {
                         PkgDetailsView(pkg: pkg, detailsView: $infoFilesState)
                     }
-
                 }
                 .navigationTitle("Result from pkgutil")
                 
                 Text("Pkgutil Output")
             }
             HStack {
+//                Toggle(buttonPkgText, isOn: $hideApplePkg)
+    
                 Button(buttonPkgText) {
                     if hideApplePkg == true {
                         hideApplePkg = false

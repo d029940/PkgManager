@@ -40,13 +40,7 @@ struct PkgFilesView: View {
                 }
             }
             Spacer()
-            Button("Check Existence") {
-                if showExistence == false {
-                    showExistence = true
-                } else {
-                    showExistence = false
-                }
-            }
+            Toggle("Check Existence", isOn: $showExistence)
         }
     }
 }

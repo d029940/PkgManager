@@ -13,7 +13,9 @@ struct PkgDetailsView: View {
     @Binding var detailsView: InfoFilesStates
     
     var body: some View {
-        try? vm.readPkgAsPlist(of: pkg)
+        if pkg != vm.currentPkg.id {
+            try? vm.readPkgAsPlist(of: pkg) // TODO: error
+        }
          return VStack {
             switch detailsView {
             case .info:
