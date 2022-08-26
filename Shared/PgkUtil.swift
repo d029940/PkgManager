@@ -56,6 +56,7 @@ enum PkgUtilErrors: Error {
 enum PkgUtilsErrorMessages: String {
     case promptMessage = "pkgutil return ocde:"
     case unknownError = "Unknown error"
+    case unkownPackage = "Unknown package:"
 }
 
 // MARK: - Main Class
@@ -65,6 +66,7 @@ class PkgUtil: ObservableObject {
     
     // MARK: - Properties exposed to outside
     @Published private(set) var pkgList = [String]()
+    
     var currentPkg = PackageInfo()
     var currentPaths = [PkgPath]()
     
@@ -90,11 +92,7 @@ class PkgUtil: ObservableObject {
         case forget = "--forget"
         case pkg_plist = "--export-plist"
     }
-    /// Options for some pkgutil commands
-    enum PkgOptions: String {
-        case onlyFiles = "--only-files"
-        case onlyDirs = "--only-dirs"
-    }
+
     /// keys used in plist of pkgutil
     enum PkgPlistKeys: String {
         case location = "install-location"
@@ -116,15 +114,15 @@ class PkgUtil: ObservableObject {
         case volume = "volume: "
     }
     
-    
     /// Apple packages begin with com.apple.pkg (or com.apple)
-    private static let applePkgs = "com.apple.pkg"
+    private static let applePkgs = "com.apple."
+ 
     
+    // MARK: - Initialization
     
     /// Start with packages of pkgutil but remove Apple packages
     public init() {
         getPkgList()
-        hideApplePkgs()
     }
     
     
@@ -144,11 +142,11 @@ class PkgUtil: ObservableObject {
         }
     }
     
-    /// hides all Apple packages from pkglist
-    func hideApplePkgs() {
-        pkgList.removeAll { pkg in
-            pkg.hasPrefix(PkgUtil.applePkgs) ? true : false
-        }
+    /// Checks whether pacakge is an Apple package
+    /// - Parameter pkg: package to be checked
+    /// - Returns: true if Apple package, otherwise false
+    func isApplePkg(_ pkg: String) -> Bool {
+        pkg.hasPrefix(PkgUtil.applePkgs) ? true : false
     }
     
     /// Reading all package groups

@@ -6,76 +6,55 @@
 //
 
 import SwiftUI
-
-enum ApplePackagesButtonText: String {
-    case hide = "Hide Apple Packages"
-    case show = "Show Apple Packages"
-}
+//
+//enum ApplePackagesButtonText: String {
+//    case hide = "Hide Apple Packages"
+//    case show = "Show Apple Packages"
+//}
 
 enum InfoFilesStates: Identifiable, CaseIterable {
     case info, files, dirs, filesAndDirs
     var id: Self {self}
 }
 
-
-
 struct ContentView: View {
     @StateObject var vm = PkgUtil()
-    @State private var hideApplePkg = true
-    @State private var buttonPkgText = ApplePackagesButtonText.show.rawValue
-    
+    @State private var showApplePkg = false
+//    @State private var buttonPkgText = ApplePackagesButtonText.show.rawValue
+    private let showAppleButtonText = "Show Apple Packages"
     
     var body: some View {
-//        vm.getPkgList()
-//        if hideApplePkg {
-//            vm.hideApplePkgs()
-//        }
         return VStack {
 
             NavigationView {
                 VStack {
                     List(vm.pkgList, id: \.self) {pkg in
-                        NavigationLink(pkg) {
-                             PkgDetailsView(pkg: pkg)
-//                            detailsView(package: pkg)
+                        // Check if Apple packages should also be listed
+                        if (showApplePkg) || (!showApplePkg && !vm.isApplePkg(pkg)) {
+                            NavigationLink(pkg) {
+                                PkgDetailsView(pkg: pkg)
+                            }
                         }
                     }
                     .navigationTitle("Result from pkgutil")
                     
                     Spacer()
-//                                    Toggle(buttonPkgText, isOn: $hideApplePkg)
-                    Button(buttonPkgText) {
-                        if hideApplePkg == true {
-                            hideApplePkg = false
-                            buttonPkgText = ApplePackagesButtonText.hide.rawValue
-                            vm.getPkgList()
-                        } else {
-                            hideApplePkg = true
-                            buttonPkgText = ApplePackagesButtonText.show.rawValue
-                            vm.getPkgList()
-                            vm.hideApplePkgs()
-                        }
-                    }
+                    
+                    Toggle(showAppleButtonText, isOn: $showApplePkg)
+//                    Button(buttonPkgText) {
+//                        showApplePkg.toggle()
+//                        if showApplePkg == true {
+//                            buttonPkgText = ApplePackagesButtonText.hide.rawValue
+//                        } else {
+//                            buttonPkgText = ApplePackagesButtonText.show.rawValue
+//                        }
+//                    }
                 }
                 
                 Text("Pkgutil Output")
             }
-//
-//                Spacer()
-//
-//                Button("Show Package List") {
-//                    vm.getPkgList()
-//                }
             .padding()
         }
-    }
-    
-    func detailsView(package: String) -> PkgDetailsView {
-        vm.getPkgList()
-        if hideApplePkg {
-            vm.hideApplePkgs()
-        }
-        return PkgDetailsView(pkg: package)
     }
 }
 

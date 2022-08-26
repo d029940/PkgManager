@@ -22,3 +22,4 @@ struct PkgInfoView_Previews: PreviewProvider {
         return PkgInfoView().environmentObject(pkgUtil)
     }
 }
+ 

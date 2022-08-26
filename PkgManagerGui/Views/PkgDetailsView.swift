@@ -9,13 +9,23 @@ import SwiftUI
 
 
 struct PkgDetailsView: View {
-    let pkg: String
+    // MARK: - state vars
     @EnvironmentObject var vm: PkgUtil
     @State private var infoFilesState = InfoFilesStates.info
     
+    // MARK: - local vars
+    let pkg: String
+    
     var body: some View {
+        // Check if another packages has been selected
         if pkg != vm.currentPkg.id {
-            try? vm.readPkgAsPlist(of: pkg) // TODO: error
+            do {
+                try vm.readPkgAsPlist(of: pkg)
+            } catch PkgUtilErrors.noPackages {
+                print("\(PkgUtilsErrorMessages.unkownPackage.rawValue) \(pkg)")
+            } catch {
+                fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+            }
         }
         return VStack {
             Spacer()
@@ -32,9 +42,12 @@ struct PkgDetailsView: View {
                 }
             }
             .pickerStyle(.segmented)
+            .padding(.leading)
         }
     }
 }
+
+// MARK: - Extension helper
 
 extension InfoFilesStates {
     var buttonText: String {
@@ -47,7 +60,7 @@ extension InfoFilesStates {
     }
 }
 
-
+// MARK: - preview
 struct PkgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         @State var infoView: InfoFilesStates = .info

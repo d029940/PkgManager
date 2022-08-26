@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct PkgFilesView: View {
+    // MARK: - State vars
     @EnvironmentObject var vm: PkgUtil
     @State private var showExistence: Bool = false
+    
+    // MARK: - local vars
     let viewContent: InfoFilesStates
+    
+    // MARK: - view
     var body: some View {
         if showExistence {
             // Files / dirs from package already read with pkgutil.
@@ -57,6 +62,8 @@ struct PkgFilesView: View {
         }
     }
 }
+
+// MARK: - Preview
 
 struct PkgFilesView_Previews: PreviewProvider {
     static var previews: some View {
