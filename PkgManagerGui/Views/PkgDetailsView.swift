@@ -12,6 +12,7 @@ struct PkgDetailsView: View {
     // MARK: - state vars
     @EnvironmentObject var vm: PkgUtil
     @State private var infoFilesState = InfoFilesStates.info
+    @State private var showPresent: Bool = false
     
     // MARK: - local vars
     let pkg: String
@@ -27,13 +28,22 @@ struct PkgDetailsView: View {
                 fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
             }
         }
+        if showPresent {
+            // Files / dirs from package already read with pkgutil.
+            // Now only check those files/dirs if they exist
+            vm.checkFileDirExistence()
+        }
         return VStack {
             Spacer()
             switch infoFilesState {
             case .info:
                 PkgInfoView()
-            default:
-                PkgFilesView(viewContent: infoFilesState)
+            case .filesAndDirs:
+                PkgFilesView(showExistence: $showPresent, paths: vm.getAllPaths())
+            case .dirs:
+                PkgFilesView(showExistence: $showPresent,paths: vm.getDirs())
+            case .files:
+                PkgFilesView(showExistence: $showPresent,paths: vm.getFiles())
             }
             Spacer()
             Picker("Details:", selection: $infoFilesState) {

@@ -212,7 +212,9 @@ class PkgUtil: ObservableObject {
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
             return
-        } catch {
+        } catch  {
+            print(error.localizedDescription)
+//            throw PkgUtilErrors.noPackages
             fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
     }
@@ -227,24 +229,28 @@ class PkgUtil: ObservableObject {
             let fullpath = "\(currentPkg.volume)\(currentPkg.installLocation)/\(item.path)"
             currentPkg.paths[index].exists = fm.fileExists(atPath: fullpath) ? true : false
         }
+        currentPaths = currentPkg.paths;
     }
     
     // MARK: - Getters to important vars
     
-    func getAllPaths() {
-        currentPaths = currentPkg.paths
+    func getAllPaths() -> [PkgPath] {
+//        currentPaths = currentPkg.paths
+        return currentPaths
     }
     
-    func getFiles() {
+    func getFiles() -> [PkgPath] {
         currentPaths = currentPkg.paths.filter({ path in
             path.mode == .file || path.mode == .link || path.mode == .exe
         })
+        return currentPaths
     }
     
-    func getDirs() {
+    func getDirs() -> [PkgPath] {
         currentPaths = currentPkg.paths.filter({ path in
             path.mode == .dir
         })
+        return currentPaths
     }
     
     // MARK: - Helpers
