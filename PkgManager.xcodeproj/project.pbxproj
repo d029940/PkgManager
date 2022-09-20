@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6330F70F28D8EC6C00157867 /* PkgUtilCmd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6330F70E28D8EC6C00157867 /* PkgUtilCmd.swift */; };
+		6330F71028D8EC6C00157867 /* PkgUtilCmd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6330F70E28D8EC6C00157867 /* PkgUtilCmd.swift */; };
 		6333988F28A15E9400AE3F86 /* PgkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DA94C9289F97F900953E32 /* PgkUtil.swift */; };
 		636A39DF28A7F6D9006B52DE /* PkgDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636A39DE28A7F6D9006B52DE /* PkgDetailsView.swift */; };
 		636A39E228A7F993006B52DE /* PkgFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636A39E128A7F993006B52DE /* PkgFilesView.swift */; };
@@ -32,6 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6330F70E28D8EC6C00157867 /* PkgUtilCmd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgUtilCmd.swift; sourceTree = "<group>"; };
 		636A39DE28A7F6D9006B52DE /* PkgDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgDetailsView.swift; sourceTree = "<group>"; };
 		636A39E128A7F993006B52DE /* PkgFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgFilesView.swift; sourceTree = "<group>"; };
 		636A39E328A82383006B52DE /* PkgInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgInfoView.swift; sourceTree = "<group>"; };
@@ -64,9 +67,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6330F70D28D8EC4600157867 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6330F70E28D8EC6C00157867 /* PkgUtilCmd.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		6333988E28A15D7000AE3F86 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				6330F70D28D8EC4600157867 /* Model */,
 				63DA94C9289F97F900953E32 /* PgkUtil.swift */,
 			);
 			path = Shared;
@@ -226,6 +238,7 @@
 				636A39E228A7F993006B52DE /* PkgFilesView.swift in Sources */,
 				6333988F28A15E9400AE3F86 /* PgkUtil.swift in Sources */,
 				63992AF028A15CA9005D2A97 /* PackageManagerApp.swift in Sources */,
+				6330F71028D8EC6C00157867 /* PkgUtilCmd.swift in Sources */,
 				636A39E428A82383006B52DE /* PkgInfoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -234,6 +247,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6330F70F28D8EC6C00157867 /* PkgUtilCmd.swift in Sources */,
 				63DA94CA289F97F900953E32 /* PgkUtil.swift in Sources */,
 				63E89BA6289E559900AC6564 /* main.swift in Sources */,
 			);

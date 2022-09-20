@@ -30,6 +30,7 @@ struct PkgPath: Identifiable {
 struct PackageInfo: Identifiable {
     var id: String
     var volume: String
+    // TODO: let applePkg: Bool
     var installLocation: String
     var installTime: Date
     var paths: [PkgPath]
@@ -44,13 +45,6 @@ struct PackageInfo: Identifiable {
 }
 
 // MARK: - Error Enums
-
-/// Error  thrown by pkgutil system command
-enum PkgUtilErrors: Error {
-    case pkgUtilCmdFailed(errorno: Int32)
-    case noPackages
-    case noPathsForPackage(package: String)
-}
 
 /// Error Messages thrown by pkgutil functions
 enum PkgUtilsErrorMessages: String {
@@ -80,8 +74,6 @@ class PkgUtil: ObservableObject {
     private(set) var pkgGroups = [String]()
     
     // MARK: - Constants for pkgutil command
-    
-    private static let pkgCmd = "/usr/sbin/pkgutil"
     
     /// Commands of pkgutil implemented
     enum PkgCommands: String {
@@ -133,7 +125,7 @@ class PkgUtil: ObservableObject {
     func getPkgList() {
         pkgList.removeAll()
         do {
-            pkgList = try PkgUtil.pkgutil(args: PkgCommands.list.rawValue).components(separatedBy: CharacterSet.newlines)
+            pkgList = try PkgUtilCmd.pkgutil(args: PkgCommands.list.rawValue).components(separatedBy: CharacterSet.newlines)
             pkgList.removeLast()
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
@@ -154,7 +146,7 @@ class PkgUtil: ObservableObject {
     func getPkgGroups() {
         pkgGroups.removeAll()
         do {
-            try pkgGroups = PkgUtil.pkgutil(args: PkgCommands.groups.rawValue).components(separatedBy: CharacterSet.newlines)
+            try pkgGroups = PkgUtilCmd.pkgutil(args: PkgCommands.groups.rawValue).components(separatedBy: CharacterSet.newlines)
             pkgGroups.removeLast()
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
@@ -171,7 +163,7 @@ class PkgUtil: ObservableObject {
     func readPkgAsPlist(of package: String) throws {
         do {
             // get all info with pkgutil and extract it
-            let pkgutilResult = try PkgUtil.pkgutil(args: PkgCommands.pkg_plist.rawValue, package)
+            let pkgutilResult = try PkgUtilCmd.pkgutil(args: PkgCommands.pkg_plist.rawValue, package)
             let plistData = Data(pkgutilResult.utf8)
             let options = PropertyListSerialization.MutabilityOptions.mutableContainers
             let plistDict = (try PropertyListSerialization.propertyList(from: plistData,
@@ -235,8 +227,7 @@ class PkgUtil: ObservableObject {
     // MARK: - Getters to important vars
     
     func getAllPaths() -> [PkgPath] {
-//        currentPaths = currentPkg.paths
-        return currentPaths
+        currentPkg.paths
     }
     
     func getFiles() -> [PkgPath] {
@@ -252,26 +243,5 @@ class PkgUtil: ObservableObject {
         })
         return currentPaths
     }
-    
-    // MARK: - Helpers
-    
-    /// call pkgutil command line tool
-    /// - Parameter args: for pkgutil
-    /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null))
-    /// - Returns: Info as a string
-    static private  func pkgutil(args: String...) throws -> String {
-        let outputPipe = Pipe()
-        let task = Process()
-        task.launchPath = PkgUtil.pkgCmd
-        task.arguments = args
-        task.standardOutput = outputPipe
-        if let _ = try? task.run() {
-            let data = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            return String(decoding: data, as: UTF8.self)
-        } else {
-            throw PkgUtilErrors.pkgUtilCmdFailed(errorno: task.terminationStatus)
-        }
-    }
-    
     
 }
