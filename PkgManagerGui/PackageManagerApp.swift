@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct PackageManagerApp: App {
-    @StateObject var pkgUtil = PkgUtil()
+    let pkgUtil = PkgUtilVm()
     
     var body: some Scene {
         WindowGroup {

@@ -7,26 +7,13 @@
 
 import Foundation
 
-var pkgutil = PkgUtil()
+var pkgutilvm = PkgUtilVm()
+
 //pkgutil.getPkgList()
-//print(pkgutil.pkgList)
-//print("PkgList count \(pkgutil.pkgList.count)")
-pkgutil.hideApplePkgs()
-//print("PkgList count \(pkgutil.pkgList.count)")
-print(pkgutil.pkgList)
-//pkgutil.getPkgGroups()
-//print(pkgutil.pkgGroups)
-pkgutil.getPkgFilesDirs(of: pkgutil.pkgList[3])
-//pkgutil.getPkgDirs(of: pkgutil.pkgList[3])
-print(pkgutil.pkgFilesDirs)
-try? pkgutil.checkFileDirExistence(of: pkgutil.pkgList[3])
-try? pkgutil.readPkgInfoAsLines(of: pkgutil.pkgList[3])
-print(pkgutil.pkgFilesDirs)
-pkgutil.getPkgDirs(of: pkgutil.pkgList[3])
-print(pkgutil.pkgFilesDirs)
-try? pkgutil.checkFileDirExistence(of: pkgutil.pkgList[3])
-try? pkgutil.readPkgInfoAsLines(of: pkgutil.pkgList[3])
-print(pkgutil.pkgFilesDirs)
+
+print(pkgutilvm.pkgListNonApple)
+try! pkgutilvm.setCurrentPkg(pkg: pkgutilvm.pkgListApple[3])
+print(pkgutilvm.getAllPaths())
 
 print("end")
 

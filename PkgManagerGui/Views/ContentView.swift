@@ -18,7 +18,7 @@ enum InfoFilesStates: Identifiable, CaseIterable {
 }
 
 struct ContentView: View {
-    @StateObject var vm = PkgUtil()
+    @EnvironmentObject var vm: PkgUtilVm
     @State private var showApplePkg = false
 //    @State private var buttonPkgText = ApplePackagesButtonText.show.rawValue
     private let showAppleButtonText = "Show Apple Packages"
@@ -28,15 +28,12 @@ struct ContentView: View {
 
             NavigationView {
                 VStack {
-                    List(vm.pkgList, id: \.self) {pkg in
-                        // Check if Apple packages should also be listed
-                        if (showApplePkg) || (!showApplePkg && !vm.isApplePkg(pkg)) {
-                            NavigationLink(pkg) {
-                                PkgDetailsView(pkg: pkg)
-                            }
-                        }
+                    // Check if Apple packages should also be listed
+                    if (showApplePkg) {
+                        ListOfPackagesView(packageList: vm.pkgListApple)
+                    } else {
+                        ListOfPackagesView(packageList: vm.pkgListNonApple)
                     }
-                    .navigationTitle("Result from pkgutil")
                     
                     Spacer()
                     
@@ -58,8 +55,22 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        return ContentView().environmentObject(PkgUtil())
+struct ListOfPackagesView: View {
+    let packageList: [String]
+    var body: some View {
+        List(packageList, id: \.self) {pkg in
+            NavigationLink(pkg) {
+                // TODO: Just set currentPkg in view model
+                PkgDetailsView(pkg: pkg)
+            }
+        }
+        .navigationTitle("Result from pkgutil")
     }
 }
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        return ContentView().environmentObject(PkgUtilVm())
+    }
+}
+

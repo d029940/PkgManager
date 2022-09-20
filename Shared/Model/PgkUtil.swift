@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 // MARK: - Types and Enums
 
@@ -30,7 +29,6 @@ struct PkgPath: Identifiable {
 struct PackageInfo: Identifiable {
     var id: String
     var volume: String
-    // TODO: let applePkg: Bool
     var installLocation: String
     var installTime: Date
     var paths: [PkgPath]
@@ -44,33 +42,13 @@ struct PackageInfo: Identifiable {
     }
 }
 
-// MARK: - Error Enums
-
-/// Error Messages thrown by pkgutil functions
-enum PkgUtilsErrorMessages: String {
-    case promptMessage = "pkgutil return ocde:"
-    case unknownError = "Unknown error"
-    case unkownPackage = "Unknown package:"
-}
-
-// MARK: - Main Class
+// MARK: - Main struct
 
 /// Defines properties and functions of  the manage package utilty
-class PkgUtil: ObservableObject {
+struct PkgUtil {
     
-    // MARK: - Properties exposed to outside
-    @Published private(set) var pkgList = [String]()
-    
-    var currentPkg = PackageInfo()
-    var currentPaths = [PkgPath]()
-    
-    var getPkgDescription: String {
-        PkgExternalInfo.id.rawValue + currentPkg.id + "\n" +
-        PkgExternalInfo.volume.rawValue + currentPkg.volume + "\n" +
-        PkgExternalInfo.location.rawValue + currentPkg.installLocation + "\n" +
-        PkgExternalInfo.time.rawValue + currentPkg.installTime.description
-    }
-    
+    static private(set) var pkgListApple = [String]()
+    static private(set) var pkgListNonApple = [String]()
     private(set) var pkgGroups = [String]()
     
     // MARK: - Constants for pkgutil command
@@ -97,33 +75,16 @@ class PkgUtil: ObservableObject {
         case mode = "mode"
     }
     
-    /// Various info retrievable for a package
-    enum PkgExternalInfo: String {
-        case location = "location: "
-        case time = "install-time: "
-        case version = "version: "
-        case id = "package-id: "
-        case volume = "volume: "
-    }
-    
     /// Apple packages begin with com.apple.pkg (or com.apple)
     private static let applePkgs = "com.apple."
  
     
-    // MARK: - Initialization
-    
-    /// Start with packages of pkgutil but remove Apple packages
-    public init() {
-        getPkgList()
-    }
-    
-    
     // MARK: - Read packages and groups
     
     /// Reading all packages
-    /// sets the var pkgList
-    func getPkgList() {
-        pkgList.removeAll()
+    /// - Returns: pkgList
+    static func getPkgList() {
+        var pkgList = [String]()
         do {
             pkgList = try PkgUtilCmd.pkgutil(args: PkgCommands.list.rawValue).components(separatedBy: CharacterSet.newlines)
             pkgList.removeLast()
@@ -132,35 +93,40 @@ class PkgUtil: ObservableObject {
         } catch {
             fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
+        for pkg in pkgList {
+            PkgUtil.isApplePkg(pkg) ? PkgUtil.pkgListApple.append(pkg) : PkgUtil.pkgListNonApple.append(pkg)
+        }
     }
     
     /// Checks whether pacakge is an Apple package
     /// - Parameter pkg: package to be checked
     /// - Returns: true if Apple package, otherwise false
-    func isApplePkg(_ pkg: String) -> Bool {
+    static func isApplePkg(_ pkg: String) -> Bool {
         pkg.hasPrefix(PkgUtil.applePkgs) ? true : false
     }
     
     /// Reading all package groups
-    /// sets the var pkgGroups
-    func getPkgGroups() {
-        pkgGroups.removeAll()
+    /// - Returns: pkgGroups
+    func getPkgGroups() -> [String] {
+        var pkgGroups = [String]()
         do {
-            try pkgGroups = PkgUtilCmd.pkgutil(args: PkgCommands.groups.rawValue).components(separatedBy: CharacterSet.newlines)
+            pkgGroups = try PkgUtilCmd.pkgutil(args: PkgCommands.groups.rawValue).components(separatedBy: CharacterSet.newlines)
             pkgGroups.removeLast()
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
         } catch {
             fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
+        return pkgGroups
     }
     
     /// Read package as plist dict
     /// - Parameter package: package to read
     /// - Returns: Package (plist as dict )
     /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null)), nopackages, noPathsForPackages
-    ///
-    func readPkgAsPlist(of package: String) throws {
+    static func readPkgAsPlist(of package: String) throws -> PackageInfo {
+        var currentPkg = PackageInfo()
+        
         do {
             // get all info with pkgutil and extract it
             let pkgutilResult = try PkgUtilCmd.pkgutil(args: PkgCommands.pkg_plist.rawValue, package)
@@ -203,45 +169,23 @@ class PkgUtil: ObservableObject {
             }
         } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
             print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
-            return
         } catch  {
             print(error.localizedDescription)
-//            throw PkgUtilErrors.noPackages
             fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
         }
+        return currentPkg
     }
     
     /// Checks if the files / dirs for the currentPkg exists
     /// Updates var currentPkg
     /// - Parameter package: package to be checked
-    func checkFileDirExistence() {
+    static func checkFileDirExistence(currentPkg: inout PackageInfo) {
         let fm = FileManager.default
         for (index, item) in currentPkg.paths.enumerated() {
             // Check file / dir for existence
             let fullpath = "\(currentPkg.volume)\(currentPkg.installLocation)/\(item.path)"
             currentPkg.paths[index].exists = fm.fileExists(atPath: fullpath) ? true : false
         }
-        currentPaths = currentPkg.paths;
-    }
-    
-    // MARK: - Getters to important vars
-    
-    func getAllPaths() -> [PkgPath] {
-        currentPkg.paths
-    }
-    
-    func getFiles() -> [PkgPath] {
-        currentPaths = currentPkg.paths.filter({ path in
-            path.mode == .file || path.mode == .link || path.mode == .exe
-        })
-        return currentPaths
-    }
-    
-    func getDirs() -> [PkgPath] {
-        currentPaths = currentPkg.paths.filter({ path in
-            path.mode == .dir
-        })
-        return currentPaths
     }
     
 }

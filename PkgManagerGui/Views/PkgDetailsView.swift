@@ -10,7 +10,7 @@ import SwiftUI
 
 struct PkgDetailsView: View {
     // MARK: - state vars
-    @EnvironmentObject var vm: PkgUtil
+    @EnvironmentObject var vm: PkgUtilVm
     @State private var infoFilesState = InfoFilesStates.info
     @State private var showPresent: Bool = false
     
@@ -19,9 +19,10 @@ struct PkgDetailsView: View {
     
     var body: some View {
         // Check if another packages has been selected
+        // TODO: this should be put into the view model. The currentPkg should be observed
         if pkg != vm.currentPkg.id {
             do {
-                try vm.readPkgAsPlist(of: pkg)
+                vm.currentPkg = try PkgUtil.readPkgAsPlist(of: pkg)
             } catch PkgUtilErrors.noPackages {
                 print("\(PkgUtilsErrorMessages.unkownPackage.rawValue) \(pkg)")
             } catch {
@@ -37,7 +38,7 @@ struct PkgDetailsView: View {
             Spacer()
             switch infoFilesState {
             case .info:
-                PkgInfoView()
+                PkgInfoView(pkgDesciption: vm.getPkgDescription)
             case .filesAndDirs:
                 PkgFilesView(showExistence: $showPresent, paths: vm.getAllPaths())
             case .dirs:
@@ -74,9 +75,9 @@ extension InfoFilesStates {
 struct PkgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         @State var infoView: InfoFilesStates = .info
-        let pkgUtil = PkgUtil()
-        try? pkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        let vm = PkgUtilVm()
+        vm.currentPkg = try! PkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
         return PkgDetailsView(pkg: "com.amazon.Kindle")
-            .environmentObject(pkgUtil)
+            .environmentObject(vm)
     }
 }

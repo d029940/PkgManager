@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct PkgInfoView: View {
-    @EnvironmentObject var vm: PkgUtil
+    let pkgDesciption: String
     
     var body: some View {
-        Text(vm.getPkgDescription)
+        Text(pkgDesciption)
     }
 }
 
 struct PkgInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        let pkgUtil = PkgUtil()
-        try? pkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
-        return PkgInfoView().environmentObject(pkgUtil)
+        let vm = PkgUtilVm()
+        vm.currentPkg = try! PkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        return PkgInfoView(pkgDesciption: vm.getPkgDescription)
     }
 }
  

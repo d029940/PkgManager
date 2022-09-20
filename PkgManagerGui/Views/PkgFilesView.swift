@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PkgFilesView: View {
     // MARK: - State vars
-    @EnvironmentObject var vm: PkgUtil
+    @EnvironmentObject var vm: PkgUtilVm
     
     // MARK: - parameters
     @Binding var showExistence: Bool
@@ -75,10 +75,10 @@ struct PkgItem: View {
 
 struct PkgFilesView_Previews: PreviewProvider {
     static var previews: some View {
-        let pkgUtil = PkgUtil()
+        let pkgUtil = PkgUtilVm()
         @State var showPresent: Bool = true
-        try? pkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
-        return PkgFilesView(showExistence: $showPresent, paths: pkgUtil.currentPkg.paths)
+        let pkginfo = try! PkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        return PkgFilesView(showExistence: $showPresent, paths: pkginfo.paths)
         .environmentObject(pkgUtil)
     }
 }
