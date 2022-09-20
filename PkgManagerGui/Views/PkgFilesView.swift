@@ -12,7 +12,6 @@ struct PkgFilesView: View {
     @EnvironmentObject var vm: PkgUtilVm
     
     // MARK: - parameters
-    @Binding var showExistence: Bool
     var paths: [PkgPath]
     
     // MARK: - view
@@ -20,7 +19,7 @@ struct PkgFilesView: View {
         
         return VStack {
             List(paths, id: \.id) {entry in
-                PkgItem(pkgPath: entry, showExistence: showExistence)
+                PkgItem(pkgPath: entry, showExistence: vm.showExistenceCheck)
                     .contextMenu {
                         Button {
                             print("\(vm.currentPkg.volume)\(vm.currentPkg.installLocation)/\(entry)")
@@ -32,7 +31,7 @@ struct PkgFilesView: View {
             }
             
             Spacer()
-            Toggle("Check Existence", isOn: $showExistence)
+            Toggle("Check Existence", isOn: $vm.showExistenceCheck)
             
         }
     }
@@ -75,10 +74,9 @@ struct PkgItem: View {
 
 struct PkgFilesView_Previews: PreviewProvider {
     static var previews: some View {
-        let pkgUtil = PkgUtilVm()
-        @State var showPresent: Bool = true
+        let vm = PkgUtilVm()
         let pkginfo = try! PkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
-        return PkgFilesView(showExistence: $showPresent, paths: pkginfo.paths)
-        .environmentObject(pkgUtil)
+        return PkgFilesView(paths: pkginfo.paths)
+        .environmentObject(vm)
     }
 }

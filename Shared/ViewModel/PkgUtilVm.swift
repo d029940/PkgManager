@@ -10,13 +10,20 @@ import Combine
 
 
 
-// MARK: - Error Enums
+// MARK: - Enums
 
 /// Error Messages thrown by pkgutil functions
 enum PkgUtilsErrorMessages: String {
     case promptMessage = "pkgutil return ocde:"
     case unknownError = "Unknown error"
     case unkownPackage = "Unknown package:"
+}
+
+
+/// indicates to show info, files & dirs of a package
+enum InfoFilesDirsStates: Identifiable, CaseIterable {
+    case info, files, dirs, filesAndDirs
+    var id: Self {self}
 }
 
 // MARK: - Main Class
@@ -28,6 +35,9 @@ class PkgUtilVm: ObservableObject {
     
     @Published private(set) var pkgListNonApple = [String]()
     @Published private(set) var pkgListApple = [String]()
+    @Published var showApplePkg = false
+    @Published var showExistenceCheck = false
+    @Published var showInfoFilesDirs = InfoFilesDirsStates.info
     
     var currentPkg = PackageInfo()
     var currentPaths = [PkgPath]()

@@ -6,21 +6,10 @@
 //
 
 import SwiftUI
-//
-//enum ApplePackagesButtonText: String {
-//    case hide = "Hide Apple Packages"
-//    case show = "Show Apple Packages"
-//}
-
-enum InfoFilesStates: Identifiable, CaseIterable {
-    case info, files, dirs, filesAndDirs
-    var id: Self {self}
-}
 
 struct ContentView: View {
     @EnvironmentObject var vm: PkgUtilVm
-    @State private var showApplePkg = false
-//    @State private var buttonPkgText = ApplePackagesButtonText.show.rawValue
+//    @ObservedObject var vm: PkgUtilVm
     private let showAppleButtonText = "Show Apple Packages"
     
     var body: some View {
@@ -29,7 +18,7 @@ struct ContentView: View {
             NavigationView {
                 VStack {
                     // Check if Apple packages should also be listed
-                    if (showApplePkg) {
+                    if (vm.showApplePkg) {
                         ListOfPackagesView(packageList: vm.pkgListApple)
                     } else {
                         ListOfPackagesView(packageList: vm.pkgListNonApple)
@@ -37,7 +26,7 @@ struct ContentView: View {
                     
                     Spacer()
                     
-                    Toggle(showAppleButtonText, isOn: $showApplePkg)
+                    Toggle(showAppleButtonText, isOn: $vm.showApplePkg)
 //                    Button(buttonPkgText) {
 //                        showApplePkg.toggle()
 //                        if showApplePkg == true {
@@ -60,7 +49,6 @@ struct ListOfPackagesView: View {
     var body: some View {
         List(packageList, id: \.self) {pkg in
             NavigationLink(pkg) {
-                // TODO: Just set currentPkg in view model
                 PkgDetailsView(pkg: pkg)
             }
         }

@@ -9,10 +9,7 @@ import SwiftUI
 
 
 struct PkgDetailsView: View {
-    // MARK: - state vars
     @EnvironmentObject var vm: PkgUtilVm
-    @State private var infoFilesState = InfoFilesStates.info
-    @State private var showPresent: Bool = false
     
     // MARK: - local vars
     let pkg: String
@@ -22,33 +19,33 @@ struct PkgDetailsView: View {
         // TODO: this should be put into the view model. The currentPkg should be observed
         if pkg != vm.currentPkg.id {
             do {
-                vm.currentPkg = try PkgUtil.readPkgAsPlist(of: pkg)
+                try vm.setCurrentPkg(pkg: pkg)
             } catch PkgUtilErrors.noPackages {
                 print("\(PkgUtilsErrorMessages.unkownPackage.rawValue) \(pkg)")
             } catch {
                 fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
             }
         }
-        if showPresent {
+        if vm.showExistenceCheck {
             // Files / dirs from package already read with pkgutil.
             // Now only check those files/dirs if they exist
             vm.checkFileDirExistence()
         }
         return VStack {
             Spacer()
-            switch infoFilesState {
+            switch vm.showInfoFilesDirs {
             case .info:
                 PkgInfoView(pkgDesciption: vm.getPkgDescription)
             case .filesAndDirs:
-                PkgFilesView(showExistence: $showPresent, paths: vm.getAllPaths())
+                PkgFilesView(paths: vm.getAllPaths())
             case .dirs:
-                PkgFilesView(showExistence: $showPresent,paths: vm.getDirs())
+                PkgFilesView(paths: vm.getDirs())
             case .files:
-                PkgFilesView(showExistence: $showPresent,paths: vm.getFiles())
+                PkgFilesView(paths: vm.getFiles())
             }
             Spacer()
-            Picker("Details:", selection: $infoFilesState) {
-                ForEach(InfoFilesStates.allCases) { state in
+            Picker("Details:", selection: $vm.showInfoFilesDirs) {
+                ForEach(InfoFilesDirsStates.allCases) { state in
                     Text(state.buttonText)
                 }
             }
@@ -60,7 +57,7 @@ struct PkgDetailsView: View {
 
 // MARK: - Extension helper
 
-extension InfoFilesStates {
+extension InfoFilesDirsStates {
     var buttonText: String {
         switch self {
         case .info: return "Info"
@@ -74,9 +71,8 @@ extension InfoFilesStates {
 // MARK: - preview
 struct PkgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        @State var infoView: InfoFilesStates = .info
         let vm = PkgUtilVm()
-        vm.currentPkg = try! PkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        try! vm.setCurrentPkg(pkg: "com.amazon.Kindle")
         return PkgDetailsView(pkg: "com.amazon.Kindle")
             .environmentObject(vm)
     }
