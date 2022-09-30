@@ -22,10 +22,10 @@ struct PkgFilesView: View {
                 PkgItem(pkgPath: entry, showExistence: vm.showExistenceCheck)
                     .contextMenu {
                         Button {
-                            print("\(vm.currentPkg.volume)\(vm.currentPkg.installLocation)/\(entry)")
+                            PkgUtilVm.openInFileViewer(volume: vm.currentPkg.volume, installLocation: vm.currentPkg.installLocation, itemPath: entry.path)
                             
                         } label: {
-                            Label("Menu", systemImage: "viewfinder")
+                            Label("Show in Finder", systemImage: "viewfinder")
                         }
                     }
             }

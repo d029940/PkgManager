@@ -9,8 +9,9 @@ import SwiftUI
 
 @main
 struct PackageManagerApp: App {
-    let pkgUtil = PkgUtilVm()
-    
+//    let pkgUtil = PkgUtilVm()
+    @StateObject var pkgUtil = PkgUtilVm()
+
     var body: some Scene {
         WindowGroup {
             ContentView()

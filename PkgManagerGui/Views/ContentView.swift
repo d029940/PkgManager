@@ -13,8 +13,6 @@ struct ContentView: View {
     private let showAppleButtonText = "Show Apple Packages"
     
     var body: some View {
-        return VStack {
-
             NavigationView {
                 VStack {
                     // Check if Apple packages should also be listed
@@ -39,8 +37,8 @@ struct ContentView: View {
                 
                 Text("Pkgutil Output")
             }
+            .frame(minWidth: 750, maxWidth: .infinity, minHeight: 450, maxHeight: .infinity)
             .padding()
-        }
     }
 }
 

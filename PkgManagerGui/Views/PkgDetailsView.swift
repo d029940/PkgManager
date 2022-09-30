@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// TODO: Implement --forget
 
 struct PkgDetailsView: View {
     @EnvironmentObject var vm: PkgUtilVm
@@ -20,10 +21,10 @@ struct PkgDetailsView: View {
         if pkg != vm.currentPkg.id {
             do {
                 try vm.setCurrentPkg(pkg: pkg)
-            } catch PkgUtilErrors.noPackages {
-                print("\(PkgUtilsErrorMessages.unkownPackage.rawValue) \(pkg)")
+            } catch PkgUtilError.noPackages {
+                print("\(PkgUtilsErrorMessage.unkownPackage.rawValue) \(pkg)")
             } catch {
-                fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+                fatalError(PkgUtilsErrorMessage.unknownError.rawValue)
             }
         }
         if vm.showExistenceCheck {
@@ -45,7 +46,7 @@ struct PkgDetailsView: View {
             }
             Spacer()
             Picker("Details:", selection: $vm.showInfoFilesDirs) {
-                ForEach(InfoFilesDirsStates.allCases) { state in
+                ForEach(InfoFilesDirsState.allCases) { state in
                     Text(state.buttonText)
                 }
             }
@@ -57,7 +58,7 @@ struct PkgDetailsView: View {
 
 // MARK: - Extension helper
 
-extension InfoFilesDirsStates {
+extension InfoFilesDirsState {
     var buttonText: String {
         switch self {
         case .info: return "Info"

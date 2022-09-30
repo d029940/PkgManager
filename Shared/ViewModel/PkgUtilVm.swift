@@ -7,13 +7,14 @@
 
 import Foundation
 import Combine
+import AppKit
 
 
 
 // MARK: - Enums
 
 /// Error Messages thrown by pkgutil functions
-enum PkgUtilsErrorMessages: String {
+enum PkgUtilsErrorMessage: String {
     case promptMessage = "pkgutil return ocde:"
     case unknownError = "Unknown error"
     case unkownPackage = "Unknown package:"
@@ -21,7 +22,7 @@ enum PkgUtilsErrorMessages: String {
 
 
 /// indicates to show info, files & dirs of a package
-enum InfoFilesDirsStates: Identifiable, CaseIterable {
+enum InfoFilesDirsState: Identifiable, CaseIterable {
     case info, files, dirs, filesAndDirs
     var id: Self {self}
 }
@@ -37,7 +38,7 @@ class PkgUtilVm: ObservableObject {
     @Published private(set) var pkgListApple = [String]()
     @Published var showApplePkg = false
     @Published var showExistenceCheck = false
-    @Published var showInfoFilesDirs = InfoFilesDirsStates.info
+    @Published var showInfoFilesDirs = InfoFilesDirsState.info
     
     var currentPkg = PackageInfo()
     var currentPaths = [PkgPath]()
@@ -81,7 +82,7 @@ class PkgUtilVm: ObservableObject {
         pkgListNonApple = PkgUtil.pkgListNonApple
     }
     
-    // MARK: - Users intent
+    // MARK: - Users intent(s)
     
     /// Checks if the files / dirs for the currentPkg exists
     /// Updates var currentPkg
@@ -89,6 +90,22 @@ class PkgUtilVm: ObservableObject {
     func checkFileDirExistence() {
         PkgUtil.checkFileDirExistence(currentPkg: &currentPkg)
         currentPaths = currentPkg.paths;
+    }
+    
+    /// Shows file/dir location and select it in Finder
+    /// - Parameters:
+    ///   - volume: Volume from Package info
+    ///   - installLocation: installation location from Package info
+    ///   - itemPath:name of file/dir to be shown in Finder
+    static func openInFileViewer(volume: String, installLocation: String, itemPath: String) {
+        let fullPath = PkgUtil.fullPath(volume: volume, installLocation: installLocation, itemPath: itemPath)
+        openInFileViewer(fullPath: fullPath)
+    }
+    
+    /// Shows file/dir location and select it in Finder
+    /// - Parameter fullPath: full path of file/dir to be shwon in Finder
+    static func openInFileViewer(fullPath: String) {
+        NSWorkspace.shared.selectFile(fullPath, inFileViewerRootedAtPath: "")
     }
     
     // MARK: - Getters & Setters to important vars

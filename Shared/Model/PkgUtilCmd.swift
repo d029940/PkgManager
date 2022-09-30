@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Error  thrown by pkgutil system command
-enum PkgUtilErrors: Error {
+enum PkgUtilError: Error {
     case pkgUtilCmdFailed(errorno: Int32)
     case noPackages
     case noPathsForPackage(package: String)
@@ -33,7 +33,7 @@ struct PkgUtilCmd {
             let data = outputPipe.fileHandleForReading.readDataToEndOfFile()
             return String(decoding: data, as: UTF8.self)
         } else {
-            throw PkgUtilErrors.pkgUtilCmdFailed(errorno: task.terminationStatus)
+            throw PkgUtilError.pkgUtilCmdFailed(errorno: task.terminationStatus)
         }
     }
     

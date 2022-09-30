@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Types and Enums
 
-enum FileModes: NSNumber {
+enum FileMode: NSNumber {
     case unknown        // unknown mode
     case dir    = 16877 // directory
     case link   = 41471 // link (file)
@@ -21,7 +21,7 @@ enum FileModes: NSNumber {
 struct PkgPath: Identifiable {
     let id = UUID()
     let path: String
-    let mode: FileModes
+    let mode: FileMode
     var exists: Bool = false   // Holds per each file/dir whether they exist in filesystem
 }
 
@@ -88,10 +88,10 @@ struct PkgUtil {
         do {
             pkgList = try PkgUtilCmd.pkgutil(args: PkgCommands.list.rawValue).components(separatedBy: CharacterSet.newlines)
             pkgList.removeLast()
-        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
-            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+        } catch PkgUtilError.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessage.promptMessage.rawValue) \(errorno)")
         } catch {
-            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+            fatalError(PkgUtilsErrorMessage.unknownError.rawValue)
         }
         for pkg in pkgList {
             PkgUtil.isApplePkg(pkg) ? PkgUtil.pkgListApple.append(pkg) : PkgUtil.pkgListNonApple.append(pkg)
@@ -112,10 +112,10 @@ struct PkgUtil {
         do {
             pkgGroups = try PkgUtilCmd.pkgutil(args: PkgCommands.groups.rawValue).components(separatedBy: CharacterSet.newlines)
             pkgGroups.removeLast()
-        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
-            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+        } catch PkgUtilError.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessage.promptMessage.rawValue) \(errorno)")
         } catch {
-            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+            fatalError(PkgUtilsErrorMessage.unknownError.rawValue)
         }
         return pkgGroups
     }
@@ -136,7 +136,7 @@ struct PkgUtil {
                                                                         options: PropertyListSerialization.ReadOptions(rawValue: options.rawValue),
                                                                         format: nil)) as? NSDictionary
             guard let plistDict = plistDict else {
-                throw PkgUtilErrors.noPackages
+                throw PkgUtilError.noPackages
             }
             
             // Process pkg info
@@ -150,31 +150,33 @@ struct PkgUtil {
             currentPkg.paths.removeAll()
             let paths = plistDict["paths"] as! [String: Any]
             for (path, value) in paths {
-                guard let value = value as? NSDictionary else { throw PkgUtilErrors.noPathsForPackage(package: package) }
+                guard let value = value as? NSDictionary else { throw PkgUtilError.noPathsForPackage(package: package) }
                 let modeAsNumber = value["mode"] as! NSNumber
-                let modeAsFileMode: FileModes
+                let modeAsFileMode: FileMode
                 switch modeAsNumber {
-                case FileModes.dir.rawValue:
-                    modeAsFileMode = FileModes.dir
-                case FileModes.file.rawValue:
+                case FileMode.dir.rawValue:
+                    modeAsFileMode = FileMode.dir
+                case FileMode.file.rawValue:
                     modeAsFileMode = .file
-                case FileModes.link.rawValue:
+                case FileMode.link.rawValue:
                     modeAsFileMode = .link
-                case FileModes.exe.rawValue:
+                case FileMode.exe.rawValue:
                     modeAsFileMode = .exe
                 default:
-                    modeAsFileMode = FileModes.unknown
+                    modeAsFileMode = FileMode.unknown
                 }
                 currentPkg.paths.append(PkgPath(path: path, mode: modeAsFileMode))
             }
-        } catch PkgUtilErrors.pkgUtilCmdFailed(let errorno) {
-            print("\(PkgUtilsErrorMessages.promptMessage.rawValue) \(errorno)")
+        } catch PkgUtilError.pkgUtilCmdFailed(let errorno) {
+            print("\(PkgUtilsErrorMessage.promptMessage.rawValue) \(errorno)")
         } catch  {
             print(error.localizedDescription)
-            fatalError(PkgUtilsErrorMessages.unknownError.rawValue)
+            fatalError(PkgUtilsErrorMessage.unknownError.rawValue)
         }
         return currentPkg
     }
+    
+    // MARK: - Utility functions
     
     /// Checks if the files / dirs for the currentPkg exists
     /// Updates var currentPkg
@@ -183,9 +185,19 @@ struct PkgUtil {
         let fm = FileManager.default
         for (index, item) in currentPkg.paths.enumerated() {
             // Check file / dir for existence
-            let fullpath = "\(currentPkg.volume)\(currentPkg.installLocation)/\(item.path)"
+            let fullpath = fullPath(volume: currentPkg.volume, installLocation: currentPkg.installLocation, itemPath: item.path)
             currentPkg.paths[index].exists = fm.fileExists(atPath: fullpath) ? true : false
         }
+    }
+    
+    /// Constructs full path out of pieces given by Package info
+    /// - Parameters:
+    ///   - volume: Volume from Package info
+    ///   - installLocation: installation location from Package info
+    ///   - itemPath:name of file/dir to be shown in Finder
+    /// - Returns: Fullpath constructed out of the parameters
+    static func fullPath(volume: String, installLocation: String, itemPath: String) -> String {
+        return("\(volume)\(installLocation)/\(itemPath)")
     }
     
 }
