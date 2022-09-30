@@ -13,6 +13,8 @@
 		636A39DF28A7F6D9006B52DE /* PkgDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636A39DE28A7F6D9006B52DE /* PkgDetailsView.swift */; };
 		636A39E228A7F993006B52DE /* PkgFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636A39E128A7F993006B52DE /* PkgFilesView.swift */; };
 		636A39E428A82383006B52DE /* PkgInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636A39E328A82383006B52DE /* PkgInfoView.swift */; };
+		6375C0FB28E75501007425BE /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 6375C0FA28E75501007425BE /* LICENSE */; };
+		6375C0FC28E75513007425BE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6375C0F928E754B0007425BE /* README.md */; };
 		638DA6BE28D9C338009768AA /* PkgUtilVm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638DA6BD28D9C338009768AA /* PkgUtilVm.swift */; };
 		638DA6BF28D9C338009768AA /* PkgUtilVm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638DA6BD28D9C338009768AA /* PkgUtilVm.swift */; };
 		63992AF028A15CA9005D2A97 /* PackageManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63992AEF28A15CA9005D2A97 /* PackageManagerApp.swift */; };
@@ -40,6 +42,8 @@
 		636A39DE28A7F6D9006B52DE /* PkgDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgDetailsView.swift; sourceTree = "<group>"; };
 		636A39E128A7F993006B52DE /* PkgFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgFilesView.swift; sourceTree = "<group>"; };
 		636A39E328A82383006B52DE /* PkgInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgInfoView.swift; sourceTree = "<group>"; };
+		6375C0F928E754B0007425BE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		6375C0FA28E75501007425BE /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		638DA6BD28D9C338009768AA /* PkgUtilVm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgUtilVm.swift; sourceTree = "<group>"; };
 		63992AED28A15CA9005D2A97 /* PackageManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PackageManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63992AEF28A15CA9005D2A97 /* PackageManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerApp.swift; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 		63E89B99289E559900AC6564 = {
 			isa = PBXGroup;
 			children = (
+				6375C0FA28E75501007425BE /* LICENSE */,
+				6375C0F928E754B0007425BE /* README.md */,
 				6333988E28A15D7000AE3F86 /* Shared */,
 				63E89BA4289E559900AC6564 /* PkgManagerCmd */,
 				63992AEE28A15CA9005D2A97 /* PkgManagerGui */,
@@ -199,7 +205,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					63992AEC28A15CA9005D2A97 = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -233,7 +239,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6375C0FB28E75501007425BE /* LICENSE in Resources */,
 				63992AF728A15CAA005D2A97 /* Preview Assets.xcassets in Resources */,
+				6375C0FC28E75513007425BE /* README.md in Resources */,
 				63992AF428A15CAA005D2A97 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,9 +283,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PkgManagerGui/PackageManager.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"PkgManagerGui/Preview Content\"";
 				DEVELOPMENT_TEAM = FJ86JFVDS2;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -301,9 +311,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PkgManagerGui/PackageManager.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"PkgManagerGui/Preview Content\"";
 				DEVELOPMENT_TEAM = FJ86JFVDS2;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -355,6 +367,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -415,6 +428,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -438,7 +452,9 @@
 		63E89BAA289E559900AC6564 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = FJ86JFVDS2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -449,7 +465,9 @@
 		63E89BAB289E559900AC6564 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = FJ86JFVDS2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
