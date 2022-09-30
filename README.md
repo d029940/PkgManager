@@ -24,3 +24,5 @@ PackageManager offers the followiing features:
 - If the files and/or dirs are shown, they can be checked if they exist on the drive by checkmark
 - In the list of files/dirs right clicking an entry will open Finder with the file/dir selected
 
+THIS IS STILL WORK IN PROGRESS
+
