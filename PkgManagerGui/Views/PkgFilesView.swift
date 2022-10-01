@@ -75,7 +75,7 @@ struct PkgItem: View {
 struct PkgFilesView_Previews: PreviewProvider {
     static var previews: some View {
         let vm = PkgUtilVm()
-        let pkginfo = try! PkgUtil.readPkgAsPlist(of: "com.amazon.Kindle")
+        let pkginfo = try! PkgUtil.readPkgAsPlist(of: vm.pkgListNonApple[2])
         return PkgFilesView(paths: pkginfo.paths)
         .environmentObject(vm)
     }

@@ -9,10 +9,9 @@ import Foundation
 
 var pkgutilvm = PkgUtilVm()
 
-//pkgutil.getPkgList()
-
 print(pkgutilvm.pkgListNonApple)
-try! pkgutilvm.setCurrentPkg(pkg: pkgutilvm.pkgListApple[3])
+let pkg = pkgutilvm.pkgListNonApple[2]
+try! pkgutilvm.setCurrentPkg(pkg: pkg)
 print(pkgutilvm.getAllPaths())
 
 print("end")

@@ -115,7 +115,8 @@ class PkgUtilVm: ObservableObject {
     }
     
     func getAllPaths() -> [PkgPath] {
-        currentPkg.paths
+        currentPaths = currentPkg.paths
+        return currentPaths
     }
     
     func getFiles() -> [PkgPath] {

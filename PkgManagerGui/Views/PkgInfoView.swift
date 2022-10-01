@@ -18,7 +18,7 @@ struct PkgInfoView: View {
 struct PkgInfoView_Previews: PreviewProvider {
     static var previews: some View {
         let vm = PkgUtilVm()
-        try! vm.setCurrentPkg(pkg: "com.amazon.Kindle")
+        try! vm.setCurrentPkg(pkg: vm.pkgListNonApple[2])
         return PkgInfoView(pkgDesciption: vm.getPkgDescription)
     }
 }

@@ -25,6 +25,9 @@ struct ContentView: View {
                     Spacer()
                     
                     Toggle(showAppleButtonText, isOn: $vm.showApplePkg)
+//                        .onChange(of: vm.showApplePkg) { newValue in
+//                           
+//                        }
 //                    Button(buttonPkgText) {
 //                        showApplePkg.toggle()
 //                        if showApplePkg == true {

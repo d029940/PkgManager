@@ -73,8 +73,9 @@ extension InfoFilesDirsState {
 struct PkgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         let vm = PkgUtilVm()
-        try! vm.setCurrentPkg(pkg: "com.amazon.Kindle")
-        return PkgDetailsView(pkg: "com.amazon.Kindle")
+        let pkg = vm.pkgListNonApple[2]
+        try! vm.setCurrentPkg(pkg: pkg)
+        return PkgDetailsView(pkg: pkg)
             .environmentObject(vm)
     }
 }
