@@ -1,5 +1,5 @@
 # PkgManager
-Package Manager of Mac packages (using pkgutil)
+Package Manager for Mac packages (using pkgutil)
 
 The Packager Manager helps to deal with pkgutil command on Mac.
 The pkgutil command displays information about packages installed with pkg.

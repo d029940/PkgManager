@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "63992AEC28A15CA9005D2A97"
-               BuildableName = "PackageManager.app"
-               BlueprintName = "PackageManager"
+               BuildableName = "Package Manager.app"
+               BlueprintName = "Package Manager"
                ReferencedContainer = "container:PkgManager.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63992AEC28A15CA9005D2A97"
-            BuildableName = "PackageManager.app"
-            BlueprintName = "PackageManager"
+            BuildableName = "Package Manager.app"
+            BlueprintName = "Package Manager"
             ReferencedContainer = "container:PkgManager.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63992AEC28A15CA9005D2A97"
-            BuildableName = "PackageManager.app"
-            BlueprintName = "PackageManager"
+            BuildableName = "Package Manager.app"
+            BlueprintName = "Package Manager"
             ReferencedContainer = "container:PkgManager.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -45,15 +45,28 @@ struct ContentView: View {
     }
 }
 
+/// Lists the packages and provides search capabilities
 struct ListOfPackagesView: View {
+
     let packageList: [String]
+    @State private var searchText = ""
+    
     var body: some View {
-        List(packageList, id: \.self) {pkg in
-            NavigationLink(pkg) {
-                PkgDetailsView(pkg: pkg)
+            List(searchResults, id: \.self) {pkg in
+                NavigationLink(pkg) {
+                    PkgDetailsView(pkg: pkg)
+                }
             }
+            .searchable(text: $searchText)
+            .navigationTitle("Result from pkgutil")
         }
-        .navigationTitle("Result from pkgutil")
+    
+    var searchResults: [String] {
+        if searchText.isEmpty {
+            return packageList
+        } else {
+            return packageList.filter { $0.contains(searchText) }
+        }
     }
 }
 

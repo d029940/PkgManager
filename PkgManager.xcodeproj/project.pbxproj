@@ -45,7 +45,7 @@
 		6375C0F928E754B0007425BE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6375C0FA28E75501007425BE /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		638DA6BD28D9C338009768AA /* PkgUtilVm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgUtilVm.swift; sourceTree = "<group>"; };
-		63992AED28A15CA9005D2A97 /* PackageManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PackageManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63992AED28A15CA9005D2A97 /* Package Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Package Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		63992AEF28A15CA9005D2A97 /* PackageManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerApp.swift; sourceTree = "<group>"; };
 		63992AF128A15CA9005D2A97 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		63992AF328A15CAA005D2A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				63E89BA2289E559900AC6564 /* pkgManager */,
-				63992AED28A15CA9005D2A97 /* PackageManager.app */,
+				63992AED28A15CA9005D2A97 /* Package Manager.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -163,9 +163,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		63992AEC28A15CA9005D2A97 /* PackageManager */ = {
+		63992AEC28A15CA9005D2A97 /* Package Manager */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63992AFB28A15CAA005D2A97 /* Build configuration list for PBXNativeTarget "PackageManager" */;
+			buildConfigurationList = 63992AFB28A15CAA005D2A97 /* Build configuration list for PBXNativeTarget "Package Manager" */;
 			buildPhases = (
 				63992AE928A15CA9005D2A97 /* Sources */,
 				63992AEA28A15CA9005D2A97 /* Frameworks */,
@@ -175,9 +175,9 @@
 			);
 			dependencies = (
 			);
-			name = PackageManager;
+			name = "Package Manager";
 			productName = PackageManager;
-			productReference = 63992AED28A15CA9005D2A97 /* PackageManager.app */;
+			productReference = 63992AED28A15CA9005D2A97 /* Package Manager.app */;
 			productType = "com.apple.product-type.application";
 		};
 		63E89BA1289E559900AC6564 /* pkgManager */ = {
@@ -229,7 +229,7 @@
 			projectRoot = "";
 			targets = (
 				63E89BA1289E559900AC6564 /* pkgManager */,
-				63992AEC28A15CA9005D2A97 /* PackageManager */,
+				63992AEC28A15CA9005D2A97 /* Package Manager */,
 			);
 		};
 /* End PBXProject section */
@@ -281,7 +281,9 @@
 		63992AF928A15CAA005D2A97 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = PkgManagerGui/PackageManager.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -294,6 +296,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Apple Packages Manager";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -310,7 +314,9 @@
 		63992AFA28A15CAA005D2A97 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = PkgManagerGui/PackageManager.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -323,6 +329,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Apple Packages Manager";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -480,7 +488,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		63992AFB28A15CAA005D2A97 /* Build configuration list for PBXNativeTarget "PackageManager" */ = {
+		63992AFB28A15CAA005D2A97 /* Build configuration list for PBXNativeTarget "Package Manager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63992AF928A15CAA005D2A97 /* Debug */,
