@@ -35,8 +35,7 @@ class PkgUtilVm: ObservableObject {
     
     // MARK: - Properties exposed to outside
     
-    @Published private(set) var pkgListNonApple = [String]()
-    @Published private(set) var pkgListApple = [String]()
+    @Published private(set) var pkgList = [String]()
     @Published var showApplePkg = false
     @Published var showExistenceCheck = false
     @Published var showInfoFilesDirs = InfoFilesDirsState.info
@@ -80,11 +79,8 @@ class PkgUtilVm: ObservableObject {
     /// Reading all packages
     /// sets the var pkgList
     func getPkgList() {
-        pkgListApple.removeAll()
-        pkgListNonApple.removeAll()
         PkgUtil.getPkgList()
-        pkgListApple = PkgUtil.pkgListApple
-        pkgListNonApple = PkgUtil.pkgListNonApple
+        pkgList = PkgUtil.pkgListNonApple
     }
     
     // MARK: - Users intent(s)
@@ -125,6 +121,26 @@ class PkgUtilVm: ObservableObject {
     /// - Parameter fullPath: full path of file/dir to be shwon in Finder
     static func openInFileViewer(fullPath: String) {
         NSWorkspace.shared.selectFile(fullPath, inFileViewerRootedAtPath: "")
+    }
+    
+    /// Forget package, i.e. remove package from MacOS package list
+    /// Information about files, dirs and info of package will be saved
+    /// - Parameter pkg: package to forget
+    static func forgetPackage(_ pkg: String) {
+        // TODO: 
+        // 1. get & save files and info
+        // 2. pkgutil forget
+        // 3. reload package list
+    }
+    
+    /// Switches the package list to list containing either Apple packages or no Apple packages
+    /// - Parameter showApplePkg: show Apple packages, if true - otherwise without
+    func showList(withApplePkgs showApplePkg: Bool) {
+        if showApplePkg {
+            pkgList = PkgUtil.pkgListApple
+        } else {
+            pkgList = PkgUtil.pkgListNonApple
+        }
     }
     
     // MARK: - Getters & Setters to important vars

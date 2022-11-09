@@ -21,7 +21,6 @@ struct PkgPath: Identifiable {
     let path: String
     let mode: FileMode
     var exists: Bool?   // Holds per each file/dir whether they exist in filesystem
-//    var exists: Bool = false   // Holds per each file/dir whether they exist in filesystem
 }
 
 /// All information about a package
@@ -217,19 +216,19 @@ struct PkgUtil {
 //        case file   = 33188 // rgular file
 //    }
     
-    //    /// keys used in plist of pkgutil
-    //    enum PkgPlistKeys: String {
-    //        case location = "install-location"
-    //        case time = "install-time"
-    //        case version = "version"
-    //        case id = "pkgid"
-    //        case receiptPlist = "receipt-plist"
-    //        case volume = "volume"
-    //        case paths = "paths"
-    //        case mode = "mode"
-    //    }
+//    /// keys used in plist of pkgutil
+//    enum PkgPlistKeys: String {
+//        case location = "install-location"
+//        case time = "install-time"
+//        case version = "version"
+//        case id = "pkgid"
+//        case receiptPlist = "receipt-plist"
+//        case volume = "volume"
+//        case paths = "paths"
+//        case mode = "mode"
+//    }
 
-    /// All information about a package
+//    /// All information about a package
 //    struct PackageInfo: Identifiable {
 //        var id: String
 //        var volume: String

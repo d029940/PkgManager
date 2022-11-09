@@ -73,7 +73,7 @@ struct PkgItem: View {
 
 struct PkgFilesView_Previews: PreviewProvider {
     static let vm = PkgUtilVm()
-    static let filesOfPackage = PkgUtil.getFilesOfPkg(vm.pkgListNonApple[2])
+    static let filesOfPackage = PkgUtil.getFilesOfPkg(vm.pkgList[2])
     
     static var previews: some View {
         return PkgFilesView(paths: filesOfPackage)

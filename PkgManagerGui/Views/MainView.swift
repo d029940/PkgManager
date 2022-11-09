@@ -9,23 +9,20 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var vm: PkgUtilVm
-//    @ObservedObject var vm: PkgUtilVm
     private let showAppleButtonText = "Show Apple Packages"
     
     var body: some View {
             NavigationView {
                 VStack {
-                    // Check if Apple packages should also be listed
-                    if (vm.showApplePkg) {
-                        ListOfPackagesView(packageList: vm.pkgListApple)
-                    } else {
-                        ListOfPackagesView(packageList: vm.pkgListNonApple)
-                    }
+                    ListOfPackagesView(packageList: vm.pkgList)
                     
                     Spacer()
                     
+                    // Check if Apple packages should also be listed
                     Toggle(showAppleButtonText, isOn: $vm.showApplePkg)
-
+                        .onChange(of: vm.showApplePkg) {
+                            vm.showList(withApplePkgs: $0)
+                        }
                 }
                 
                 Text("Pkgutil Output")

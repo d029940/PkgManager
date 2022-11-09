@@ -19,7 +19,7 @@ struct PkgInfoView_Previews: PreviewProvider {
     static let vm = PkgUtilVm()
     
     static var previews: some View {
-        vm.setCurrentPkg(pkg: vm.pkgListNonApple[2])
+        vm.setCurrentPkg(pkg: vm.pkgList[2])
         return PkgInfoView(pkgDesciption: vm.getPkgDescription)
     }
 }

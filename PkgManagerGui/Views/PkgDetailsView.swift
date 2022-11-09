@@ -59,8 +59,8 @@ extension InfoFilesDirsState {
 // MARK: - preview
 struct PkgDetailsView_Previews: PreviewProvider {
     static let vm = PkgUtilVm()
-    static let pkg = vm.pkgListNonApple[2]
-    
+    static let pkg = vm.pkgList[2]
+
     static var previews: some View {
         vm.setCurrentPkg(pkg: pkg)
         return PkgDetailsView(pkg: pkg)
