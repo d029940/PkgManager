@@ -9,16 +9,15 @@ import Foundation
 
 var pkgutilvm = PkgUtilVm()
 
-print(pkgutilvm.pkgListNonApple)
+//print(pkgutilvm.pkgListNonApple)
 let pkg = pkgutilvm.pkgListNonApple[2]
-try! pkgutilvm.setCurrentPkg(pkg: pkg)
-print(pkgutilvm.getAllPaths())
+pkgutilvm.setCurrentPkg(pkg: pkg)
+//print(pkgutilvm.getAllPaths())
+print(PkgUtil.getFilesOfPkg(pkg, fileMode: .dir))
+print(PkgUtil.getInfoOfPkg(pkg))
+//PkgUtil.readPkg(pkg)
 
 print("end")
-
-
-
-
 
 
 

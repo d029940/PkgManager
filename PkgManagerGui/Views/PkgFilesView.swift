@@ -29,7 +29,6 @@ struct PkgFilesView: View {
                         }
                     }
             }
-            
             Spacer()
             Toggle("Check Existence", isOn: $vm.showExistenceCheck)
             
@@ -45,7 +44,7 @@ struct PkgItem: View {
 
     var body: some View {
         if showExistence {
-            if pkgPath.exists {
+            if pkgPath.exists! {
                 Label {
                     Text(pkgPath.path)
                 }
@@ -73,10 +72,11 @@ struct PkgItem: View {
 // MARK: - Preview
 
 struct PkgFilesView_Previews: PreviewProvider {
+    static let vm = PkgUtilVm()
+    static let filesOfPackage = PkgUtil.getFilesOfPkg(vm.pkgListNonApple[2])
+    
     static var previews: some View {
-        let vm = PkgUtilVm()
-        let pkginfo = try! PkgUtil.readPkgAsPlist(of: vm.pkgListNonApple[2])
-        return PkgFilesView(paths: pkginfo.paths)
+        return PkgFilesView(paths: filesOfPackage)
         .environmentObject(vm)
     }
 }

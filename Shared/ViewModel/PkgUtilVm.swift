@@ -18,6 +18,7 @@ enum PkgUtilsErrorMessage: String {
     case promptMessage = "pkgutil return ocde:"
     case unknownError = "Unknown error"
     case unkownPackage = "Unknown package:"
+    case invalidArgs = "Invalid argument list"
 }
 
 
@@ -41,13 +42,17 @@ class PkgUtilVm: ObservableObject {
     @Published var showInfoFilesDirs = InfoFilesDirsState.info
     
     var currentPkg = PackageInfo()
-    var currentPaths = [PkgPath]()
+    var currentFilesPaths = [PkgPath]()
+    var currentOnlyFilesPaths = [PkgPath]()
+    var currentOnlyDirsPaths = [PkgPath]()
     
     var getPkgDescription: String {
-        PkgExternalInfo.id.rawValue + currentPkg.id + "\n" +
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm"
+        return PkgExternalInfo.id.rawValue + currentPkg.id + "\n" +
         PkgExternalInfo.volume.rawValue + currentPkg.volume + "\n" +
         PkgExternalInfo.location.rawValue + currentPkg.installLocation + "\n" +
-        PkgExternalInfo.time.rawValue + currentPkg.installTime.description
+        PkgExternalInfo.time.rawValue + dateFormatter.string(from: currentPkg.installTime)
     }
     
     // MARK: - Constants for pkgutil command
@@ -88,10 +93,24 @@ class PkgUtilVm: ObservableObject {
     /// Updates var currentPkg
     /// - Parameter package: package to be checked
     func checkFileDirExistence() {
-        PkgUtil.checkFileDirExistence(currentPkg: &currentPkg)
-        currentPaths = currentPkg.paths;
+        switch showInfoFilesDirs {
+        case .files:
+            if currentOnlyFilesPaths.first?.exists == nil {
+                PkgUtil.checkFileDirExistence(currentPkg: currentPkg, paths: &currentOnlyFilesPaths)
+            }
+        case .dirs:
+            if currentOnlyDirsPaths.first?.exists == nil {
+                PkgUtil.checkFileDirExistence(currentPkg: currentPkg, paths: &currentOnlyDirsPaths)
+            }
+        case .filesAndDirs:
+            if currentFilesPaths.first?.exists == nil {
+                PkgUtil.checkFileDirExistence(currentPkg: currentPkg, paths: &currentFilesPaths)
+            }
+        default:
+            return
+        }
     }
-    
+
     /// Shows file/dir location and select it in Finder
     /// - Parameters:
     ///   - volume: Volume from Package info
@@ -110,28 +129,87 @@ class PkgUtilVm: ObservableObject {
     
     // MARK: - Getters & Setters to important vars
     
-    func setCurrentPkg(pkg: String) throws {
-        currentPkg = try PkgUtil.readPkgAsPlist(of: pkg)
+    func setCurrentPkg(pkg: String) {
+        if currentPkg.id != pkg {
+            currentPkg = PkgUtil.getInfoOfPkg(pkg)
+            currentFilesPaths.removeAll()
+            currentOnlyDirsPaths.removeAll()
+            currentOnlyFilesPaths.removeAll()
+            // TODO: Check needed?
+            if showExistenceCheck {
+                checkFileDirExistence()
+            }
+        }
     }
     
     func getAllPaths() -> [PkgPath] {
-        currentPaths = currentPkg.paths
-        return currentPaths
+        if currentFilesPaths.isEmpty {
+            currentFilesPaths = PkgUtil.getFilesOfPkg(currentPkg.id, fileMode: .fileAndDir)
+        }
+        if showExistenceCheck {
+            checkFileDirExistence()
+        }
+        return currentFilesPaths
     }
     
     func getFiles() -> [PkgPath] {
-        currentPaths = currentPkg.paths.filter({ path in
-            path.mode == .file || path.mode == .link || path.mode == .exe
-        })
-        return currentPaths
+        if currentOnlyFilesPaths.isEmpty {
+            currentOnlyFilesPaths = PkgUtil.getFilesOfPkg(currentPkg.id, fileMode: .file)
+        }
+        if showExistenceCheck {
+            checkFileDirExistence()
+        }
+        return currentOnlyFilesPaths
     }
     
     func getDirs() -> [PkgPath] {
-        currentPaths = currentPkg.paths.filter({ path in
-            path.mode == .dir
-        })
-        return currentPaths
+        if currentOnlyDirsPaths.isEmpty {
+            currentOnlyDirsPaths = PkgUtil.getFilesOfPkg(currentPkg.id, fileMode: .dir)
+        }
+        if showExistenceCheck {
+            checkFileDirExistence()
+        }
+        return currentOnlyDirsPaths
     }
+    
+    
+    // MARK: - Old approach taking plist as reading pkg list -> quite slow
+
+//    /// Checks if the files / dirs for the currentPkg exists
+//    /// Updates var currentPkg
+//    /// - Parameter package: package to be checked
+//    func checkFileDirExistence_Old() {
+//        PkgUtil.checkFileDirExistence_Old(currentPkg: &currentPkg)
+//        currentPaths = currentPkg.paths;
+//    }
+//
+//    func setCurrentPkg_Old(pkg: String) throws {
+//        if currentPkg.id != pkg {
+//            currentPkg = try PkgUtil.readPkgAsPlist(of: pkg)
+//            currentFilesPaths.removeAll()
+//            currentOnlyDirsPaths.removeAll()
+//            currentOnlyFilesPaths.removeAll()
+//        }
+//    }
+//
+//    func getAllPaths_Old() -> [PkgPath] {
+//        currentPaths = currentPkg.paths
+//        return currentPaths
+//    }
+//
+//    func getFiles_Old() -> [PkgPath] {
+//        currentPaths = currentPkg.paths.filter({ path in
+//            path.mode == .file || path.mode == .link || path.mode == .exe
+//        })
+//        return currentPaths
+//    }
+//
+//    func getDirs_Old() -> [PkgPath] {
+//        currentPaths = currentPkg.paths.filter({ path in
+//            path.mode == .dir
+//        })
+//        return currentPaths
+//    }
     
 }
 

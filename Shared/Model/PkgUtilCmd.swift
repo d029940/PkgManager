@@ -23,6 +23,7 @@ struct PkgUtilCmd {
     /// - Parameter args: for pkgutil
     /// - Throws: PkgUtilErrors.pkgUtilCmdFailed (pkgutil call failed (returns non-null))
     /// - Returns: Info as a string
+    @discardableResult
     static func pkgutil(args: String...) throws -> String {
         let outputPipe = Pipe()
         let task = Process()

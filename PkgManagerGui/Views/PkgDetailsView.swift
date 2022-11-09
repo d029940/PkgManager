@@ -7,31 +7,18 @@
 
 import SwiftUI
 
-// TODO: Implement --forget
-
 struct PkgDetailsView: View {
     @EnvironmentObject var vm: PkgUtilVm
     
     // MARK: - local vars
     let pkg: String
     
+    init(pkg: String) {
+        self.pkg = pkg
+    }
+    
     var body: some View {
-        // Check if another packages has been selected
-        // TODO: this should be put into the view model. The currentPkg should be observed
-        if pkg != vm.currentPkg.id {
-            do {
-                try vm.setCurrentPkg(pkg: pkg)
-            } catch PkgUtilError.noPackages {
-                print("\(PkgUtilsErrorMessage.unkownPackage.rawValue) \(pkg)")
-            } catch {
-                fatalError(PkgUtilsErrorMessage.unknownError.rawValue)
-            }
-        }
-        if vm.showExistenceCheck {
-            // Files / dirs from package already read with pkgutil.
-            // Now only check those files/dirs if they exist
-            vm.checkFileDirExistence()
-        }
+        vm.setCurrentPkg(pkg: pkg)
         return VStack {
             Spacer()
             switch vm.showInfoFilesDirs {
@@ -71,10 +58,11 @@ extension InfoFilesDirsState {
 
 // MARK: - preview
 struct PkgDetailsView_Previews: PreviewProvider {
+    static let vm = PkgUtilVm()
+    static let pkg = vm.pkgListNonApple[2]
+    
     static var previews: some View {
-        let vm = PkgUtilVm()
-        let pkg = vm.pkgListNonApple[2]
-        try! vm.setCurrentPkg(pkg: pkg)
+        vm.setCurrentPkg(pkg: pkg)
         return PkgDetailsView(pkg: pkg)
             .environmentObject(vm)
     }

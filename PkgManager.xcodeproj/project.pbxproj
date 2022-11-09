@@ -18,7 +18,7 @@
 		638DA6BE28D9C338009768AA /* PkgUtilVm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638DA6BD28D9C338009768AA /* PkgUtilVm.swift */; };
 		638DA6BF28D9C338009768AA /* PkgUtilVm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638DA6BD28D9C338009768AA /* PkgUtilVm.swift */; };
 		63992AF028A15CA9005D2A97 /* PackageManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63992AEF28A15CA9005D2A97 /* PackageManagerApp.swift */; };
-		63992AF228A15CA9005D2A97 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63992AF128A15CA9005D2A97 /* ContentView.swift */; };
+		63992AF228A15CA9005D2A97 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63992AF128A15CA9005D2A97 /* MainView.swift */; };
 		63992AF428A15CAA005D2A97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63992AF328A15CAA005D2A97 /* Assets.xcassets */; };
 		63992AF728A15CAA005D2A97 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63992AF628A15CAA005D2A97 /* Preview Assets.xcassets */; };
 		63DA94CA289F97F900953E32 /* PgkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DA94C9289F97F900953E32 /* PgkUtil.swift */; };
@@ -47,7 +47,7 @@
 		638DA6BD28D9C338009768AA /* PkgUtilVm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PkgUtilVm.swift; sourceTree = "<group>"; };
 		63992AED28A15CA9005D2A97 /* Package Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Package Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		63992AEF28A15CA9005D2A97 /* PackageManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerApp.swift; sourceTree = "<group>"; };
-		63992AF128A15CA9005D2A97 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		63992AF128A15CA9005D2A97 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		63992AF328A15CAA005D2A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63992AF628A15CAA005D2A97 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		63992AF828A15CAA005D2A97 /* PackageManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PackageManager.entitlements; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 		636A39E028A7F6E6006B52DE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				63992AF128A15CA9005D2A97 /* ContentView.swift */,
+				63992AF128A15CA9005D2A97 /* MainView.swift */,
 				636A39DE28A7F6D9006B52DE /* PkgDetailsView.swift */,
 				636A39E328A82383006B52DE /* PkgInfoView.swift */,
 				636A39E128A7F993006B52DE /* PkgFilesView.swift */,
@@ -253,7 +253,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63992AF228A15CA9005D2A97 /* ContentView.swift in Sources */,
+				63992AF228A15CA9005D2A97 /* MainView.swift in Sources */,
 				636A39DF28A7F6D9006B52DE /* PkgDetailsView.swift in Sources */,
 				636A39E228A7F993006B52DE /* PkgFilesView.swift in Sources */,
 				6333988F28A15E9400AE3F86 /* PgkUtil.swift in Sources */,
@@ -303,7 +303,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.manfredkern.PackageManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -336,7 +337,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.manfredkern.PackageManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

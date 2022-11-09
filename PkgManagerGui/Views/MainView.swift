@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct MainView: View {
     @EnvironmentObject var vm: PkgUtilVm
 //    @ObservedObject var vm: PkgUtilVm
     private let showAppleButtonText = "Show Apple Packages"
@@ -25,17 +25,7 @@ struct ContentView: View {
                     Spacer()
                     
                     Toggle(showAppleButtonText, isOn: $vm.showApplePkg)
-//                        .onChange(of: vm.showApplePkg) { newValue in
-//                           
-//                        }
-//                    Button(buttonPkgText) {
-//                        showApplePkg.toggle()
-//                        if showApplePkg == true {
-//                            buttonPkgText = ApplePackagesButtonText.hide.rawValue
-//                        } else {
-//                            buttonPkgText = ApplePackagesButtonText.show.rawValue
-//                        }
-//                    }
+
                 }
                 
                 Text("Pkgutil Output")
@@ -58,8 +48,18 @@ struct ListOfPackagesView: View {
                 }
             }
             .searchable(text: $searchText)
+            .contextMenu {
+                Button {
+                    // TODO: Implement --forget
+                    // 1. move pkg (i.e. plist) to bin
+                    // 2. forget pkg
+                } label: {
+                    Label("Delete (forget) package",
+                          systemImage: "trash.circle")
+                }
+            }
             .navigationTitle("Result from pkgutil")
-        }
+    }
     
     var searchResults: [String] {
         if searchText.isEmpty {
@@ -70,9 +70,9 @@ struct ListOfPackagesView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        return ContentView().environmentObject(PkgUtilVm())
+        return MainView().environmentObject(PkgUtilVm())
     }
 }
 
